@@ -1,0 +1,30 @@
+---
+title: "Homework"
+author: "Lluis Ramon"
+date: "20 de abril de 2015"
+output: html_document
+---
+
+# Introduction
+
+TODO(Gerard): Reduced version
+TOANSWER(Nuria): How long? Something already known.
+
+# Outcome categorization
+
+TODO(Lluis)
+
+# GEE 
+
+TODO(Mathieu)
+
+## Random effects model
+
+
+# Missing Data Analysis
+
+TODO(Gerard): Missing exploration
+
+
+
+TOANSWER(Nuria): Methodology Section for GEE GLMM
