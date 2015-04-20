@@ -7,7 +7,7 @@ output: html_document
 
 # Introduction
 
-TODO(Gerard): Reduced version
+TODO(Mathieu): Reduced version
 TOANSWER(Nuria): How long? Something already known.
 
 # Outcome categorization
