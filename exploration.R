@@ -18,10 +18,13 @@ str(cows)
 head(cows)
 summary(cows)
 cows$pcv.b <- as.numeric(cows$pcv > 22)
+cows$pcv.f <- factor(cows$pcv > 22, labels = c("Healthy", "Unhealthy"))
+cows$time.f <- paste("Time", cows$time)
 cows.com <- na.omit(cows)
 cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
 
-table(cows.com$pcv.b , cows.com$time)
+table(cows$pcv.f , cows$time.f, useNA = "ifany")
+table(cows.com$pcv.f , cows.com$time.f)
 
 qplot(factor(time), pcv.b, data = cows.com, group = id, geom = c("line", "point"), facets = id~ dose, 
       colour = factor(id)) + scale_color_discrete(guide = 'none')

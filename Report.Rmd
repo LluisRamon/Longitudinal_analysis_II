@@ -11,7 +11,27 @@ TODO(Mathieu): Reduced version
 
 # Outcome categorization
 
-TODO(Lluis)
+The binary response was related with a cow being healthy or unhealthy. Taking this into considertation, the outcome was categorized using the following criteria:
+
+* [Literature review][]*: A healthy cow is estimated to have a PCV value ranging from 24 to 46.
+* Practical Modeling: As the binary response should be modeled in following sections, a suitable one was searched. To this end, a trial and error with a cutoff ranging from 20 to 24 was explored.
+
+The threshold between healthy and unhelathy cow was set at a PCV value of 22. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was cathegorized as unhelathy.
+
+TODO(Mathieu): Improve text
+TODO(Gerard): Table to LaTeX. (You can remove Missing row if you want)
+
+```{r}
+#             Time 1 Time 2 Time 3
+#   Healthy       29     17      6
+#   Unhealthy      0     10     14
+#   <NA>           1      3     10
+```
+
+
+[Literature review]:http://research.vet.upenn.edu/Dairy/ClinicalPathology/tabid/3848/Default.aspx
+
+
 
 # Statistical methods
 
