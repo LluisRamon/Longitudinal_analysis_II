@@ -8,13 +8,23 @@ output: html_document
 # Introduction
 
 TODO(Mathieu): Reduced version
-TOANSWER(Nuria): How long? Something already known.
 
 # Outcome categorization
 
 TODO(Lluis)
 
-# GEE 
+# Statistical methods
+
+The methods used in the statistical analyses are detailed in this section. First a Generalized Estimating Equations and latter a Generalized Linear Mixed Model. An exploratory data analysis was performed before those regression methods.
+
+## GEE
+
+## GLMM
+
+
+# Results
+
+## GEE 
 
 TODO(Mathieu)
 
@@ -27,4 +37,4 @@ TODO(Gerard): Missing exploration
 
 
 
-TOANSWER(Nuria): Methodology Section for GEE GLMM
+
