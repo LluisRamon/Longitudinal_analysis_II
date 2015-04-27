@@ -17,8 +17,8 @@ cows$dose <- factor(cows$dose, levels = c("L", "M", "H"))
 str(cows)
 head(cows)
 summary(cows)
-cows$pcv.b <- as.numeric(cows$pcv > 22)
-cows$pcv.f <- factor(cows$pcv > 22, labels = c("Healthy", "Unhealthy"))
+cows$pcv.b <- as.numeric(cows$pcv > 20)
+cows$pcv.f <- factor(cows$pcv > 20, labels = c("Healthy", "Unhealthy"))
 cows$time.f <- paste("Time", cows$time)
 cows.com <- na.omit(cows)
 cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
@@ -76,17 +76,22 @@ model.sel(model00, model01, model02, model03, rank = QIC)
 
 anova(model00, model01)
 
-predict(model00)
-
-model1 <- geeglm(pcv.b ~ dose*time, id = idDose, data = cows.com,
+# Iteration 1
+model11 <- geeglm(pcv.b ~ dose*time, id = idDose, data = cows.com,
                   family = binomial, corstr = "exch", scale.fix = TRUE)
 
-model2 <- geeglm(pcv.b ~ dose*time, id = idDose, data = cows.com,
+model12 <- geeglm(pcv.b ~ time + dose + nbirth, id = idDose, data = cows.com,
                family = binomial, corstr = "exch", scale.fix = TRUE)
+
+model13 <- geeglm(pcv.b ~ time + dose + dose:nbirth, id = idDose, data = cows.com,
+                  family = binomial, corstr = "exch", scale.fix = TRUE)
 
 # nonstructure (weaker)
 
-summary(model1)
+summary(model11)
+summary(model12)
+summary(model13)
+
 
 anova(model1, model2)
 # Pseudo likelihood function
