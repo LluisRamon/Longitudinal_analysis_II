@@ -56,9 +56,9 @@ cows.com <- cows.com %>% arrange(idDose)
 
 model00 <- geeglm(pcv.b ~ dose, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
-model01 <- geeglm(pcv.b ~ time, id = idDose, data = cows.com,
+model01 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
-model02 <- geeglm(pcv.b ~ nbirth, id = idDose, data = cows.com,
+model02 <- geeglm(pcv.b ~ dose + nbirth, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
 model03 <- geeglm(pcv.b ~ time:dose, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
@@ -68,9 +68,13 @@ summary(model01)
 summary(model02)
 summary(model03)
 
+# Criteria for comparision -> QIC
+# Scales changes a lot from one pseudo-likelihood from one to other
 
-# No criteria for comparision?
-# Scales changes a lot from one pseudo-likelihood from one to other?
+library("MuMIn") # Package for GEE model selection (QIC)
+model.sel(model00, model01, model02, model03, rank = QIC)
+
+anova(model00, model01)
 
 predict(model00)
 

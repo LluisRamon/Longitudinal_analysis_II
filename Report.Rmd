@@ -39,6 +39,10 @@ The methods used in the statistical analyses are detailed in this section. First
 
 ## GEE
 
+The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows in time, these two variables were included in the model.
+
+From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
+
 ## GLMM
 
 
@@ -56,5 +60,12 @@ TODO(Mathieu)
 TODO(Gerard): Missing exploration
 
 
+
+# Bibliography
+
+* [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
+
+
+[Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
 
 
