@@ -60,7 +60,7 @@ model01 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
 model02 <- geeglm(pcv.b ~ dose + nbirth, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
-model03 <- geeglm(pcv.b ~ time:dose, id = idDose, data = cows.com,
+model03 <- geeglm(pcv.b ~ dose + time:dose, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
 
 summary(model00)
