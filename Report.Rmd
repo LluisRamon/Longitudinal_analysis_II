@@ -59,13 +59,26 @@ TODO(Mathieu)
 
 TODO(Gerard): Missing exploration
 
+# Limitations and Further research
+
+* Jacknife estimators for small sample better than sandwhich estimator
+
+> Jackknife variance estimators are preferable to the sandwich estimator in case of a small number of clusters. (Højsgaard, Halekoh, Yan 2006)
+
+* Compre a new factor L and M dose against H dose
+* Perfect Separation Problem with gee
+
+> It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
 
 
 # Bibliography
 
-* [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
+TODO(Gerard): Normalize citations
 
+* [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
+* [Højsgaard, Halekoh, Yan 2006, The R Package geepack for Generalized Estimating  Equations.][]
+* [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
-
-
+[Højsgaard, Halekoh, Yan 2006, The R Package geepack for Generalized Estimating  Equations.]: http://www.jstatsoft.org/v15/i02/paper
+[Hardin & Hilbe 2002, Generalized Estimating Equations]: http://books.google.es/books/about/Generalized_Estimating_Equations.html?id=wxl7ajq8ymYC&redir_esc=y
