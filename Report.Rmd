@@ -45,6 +45,10 @@ From this initial model, a forward step-wise method was carried for the model se
 
 ## GLMM
 
+## Transition Models
+
+TODO(Lluis): Add model information.
+TODO(All): Include pros/cons with our data. Decide if our data could be modeled using this kinds of models.
 
 # Results
 
