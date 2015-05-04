@@ -102,6 +102,10 @@ model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
                family = binomial, corstr = "exch", scale.fix = TRUE)
 
 
+# GLMM --------------------------------------------------------------------
+
+TODO(Mathieu)
+
 # Missingnes --------------------------------------------------------------
 
 # Sensitivity analysis

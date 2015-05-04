@@ -45,6 +45,8 @@ From this initial model, a forward step-wise method was carried for the model se
 
 ## GLMM
 
+TODO(Mathieu)
+
 ## Transition Models
 
 TODO(Lluis): Add model information.
@@ -54,10 +56,11 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 
 ## GEE 
 
-TODO(Mathieu)
+TODO(Lluis)
 
 ## Random effects model
 
+TODO(Mathieu)
 
 # Missing Data Analysis
 
@@ -74,6 +77,7 @@ TODO(Gerard): Missing exploration
 
 > It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
 
+* Compare GEE model with GLMM. Coeficients and SE.
 
 # Bibliography
 
