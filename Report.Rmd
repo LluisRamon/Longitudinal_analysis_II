@@ -9,6 +9,41 @@ output: html_document
 
 TODO(Mathieu): Reduced version
 
+Cattle are an important economic resource and also a major health factor in many countries. Therefore preventing diseases in a herd is vital. 
+
+In this study we focus our interest on the parasite of trypanosomosis which can lead to the death of a cow. This disease, transmitted by the tsetse flies, causes an infection characterized by fever, loss of appetite and anemia, which can lead to death depending on different factors.
+
+One medicine, the Berenil, is used to cure the infected cattle. The aim of this research is to determine the efficiency of different doses of Berenil. Finding the most efficient dose, if such a dose exists, is critical when it comes to save both cattle and money. Here lies all the interest of our study. 
+
+To determine if a cow is ill or not a binary variable will be studied. This indicator can be 1 for a healthy cow or 0 for a sick one.
+
+
+
+# Objective
+
+The aim of this study is to assess the efficacy of different doses of Berenil in cattle infected with the trypanosomosis parasite.
+
+
+# Dataset
+
+A cohort of 10 different cows infected by trypanosomosis parasite was selected for the study. Each  Berenil dose (low, medium and high) was administrated three times (time 1, 2 or 3) for each animal. PCV was reported each time as well as the number of calves it had before being infected.
+
+The variables reported for this study are presented below.
+
+* Id: Each cow has its own id. From 1 to 10. _(id)_
+* PCV: Binary variable. _(pcv.b)_
+* Dose: H High, M Medium L low. _(dose)_
+* Time: From 1 to 3. _(time)_
+* Number of birth: From 2 to 8. _(nbirth)_
+
+Since the gathering process of the data was unknown, several assumptions were needed.
+
+* Each time PCV is obtained before the treatment. Therefore the effect of the third dose could not be evaluated.
+* Dose is assigned randomly in time to the cow.
+* For a given cow, the previous treatments (high, medium or low) do not affect the following ones.
+* Time intervals are the same and fixed.
+
+
 # Outcome categorization
 
 The binary response was related with a cow being healthy or unhealthy. Taking this into considertation, the outcome was categorized using the following criteria:
@@ -46,6 +81,9 @@ From this initial model, a forward step-wise method was carried for the model se
 ## GLMM
 
 TODO(Mathieu)
+
+IN order to take into account the specific effect due to the cow itself we had to introduce random effects in our model. To do that we performed a Generalised Linear Mixed Model. We kept the fixed effects found in the previous part and add random effects on the intercept and the time. Since we have two way of grouping our data we have a random effect for the id and among the values of a given cow we have random effects for the kind of dose that was used. 
+
 
 ## Transition Models
 

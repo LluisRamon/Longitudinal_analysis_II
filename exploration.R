@@ -104,7 +104,49 @@ model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
 
 # GLMM --------------------------------------------------------------------
 
-TODO(Mathieu)
+# TODO(Mathieu)
+
+library("lme4")
+
+?glmer
+
+modelmm1 <- glmer(pcv.b~dose+time+(0+dose+time|id),data=cows.com,family=binomial)
+summary(modelmm1)
+
+modelmm2 <- glmer(pcv.b~dose+time+(0+time|idDose),data=cows.com,family=binomial)
+summary(modelmm2)
+
+modelmm3 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm3)
+# Warning + non significant
+
+# A lot of change in the st. dev depending on the group used.
+
+model.mm.1 <- glmer(pcv.b~dose*time+nbirth+(time|id/dose),data=cows.com,family=binomial)
+summary(model.mm.1)
+# cor -1
+
+model.mm.2 <- glmer(pcv.b~dose*time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(model.mm.2)
+# huge difference between the st dev of fixed effects and the one for random effects.
+# Is it a good sign when it comes to the importance of random effects?
+# every covariate is significant.
+# Meaning of the estimates?
+
+
+# Is the model stable?
+modelmm1 <- glmer(pcv.b~dose*time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm1)
+
+modelmm12 <- glmer(pcv.b~dose+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm12)
+
+modelmm13 <- glmer(pcv.b~time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm13)
+
+modelmm14 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm14)
+# Correlation between covariates.
 
 # Missingnes --------------------------------------------------------------
 
