@@ -108,8 +108,6 @@ model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
 
 library("lme4")
 
-?glmer
-
 modelmm1 <- glmer(pcv.b~dose+time+(0+dose+time|id),data=cows.com,family=binomial)
 summary(modelmm1)
 
