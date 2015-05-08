@@ -2,7 +2,7 @@
 title: "Homework"
 author: "Lluis Ramon"
 date: "20 de abril de 2015"
-output: html_document
+output: pdf_document
 ---
 
 # Introduction
@@ -56,13 +56,38 @@ The threshold between healthy and unhelathy cow was set at a PCV value of 20. If
 TODO(Mathieu): Improve text
 TODO(Gerard): Table to LaTeX. (You can remove Missing row if you want)
 
-```{r}
-#            Time 1 Time 2 Time 3
-#   Healthy       28     15      2
-#   Unhealthy      1     12     18
-#   <NA>           1      3     10
-```
+```{r, echo=FALSE, warning=FALSE, results='asis'}
+# Load packages -----------------------------------------------------------
+library("nlme")
+# version 3.1-120 is required
+suppressMessages(library("dplyr"))
+library("ggplot2")
+library("tidyr")
+library("corrplot")
+library("grid")
+library("gridExtra")
+library(xtable)
 
+# Import dataset ----------------------------------------------------------
+cows <- read.table("data/cattle_mes dades.txt", header = TRUE, 
+                   sep = "\t", dec = ",", na.strings = "")
+
+names(cows) <- c("id", "dose", "pcv", "time", "nbirth")
+cows$dose <- factor(cows$dose, levels = c("L", "M", "H"))
+cows$pcv.b <- as.numeric(cows$pcv > 20)
+cows$pcv.f <- factor(cows$pcv > 20, labels = c("Unhealthy", "Healthy"))
+cows$time.f <- paste("Time", cows$time)
+cows.com <- na.omit(cows)
+cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
+
+a <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
+rownames(a)[3] <- "NA"
+taula <- xtable(a,
+                caption="Contingence table for the dichotomised response variable (rows) and the times.",
+                label="table:freqs",
+                digits=0)
+print(taula, table.placement = "H")
+````
 
 [Literature review]:http://research.vet.upenn.edu/Dairy/ClinicalPathology/tabid/3848/Default.aspx
 
