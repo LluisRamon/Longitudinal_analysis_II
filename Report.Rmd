@@ -2,12 +2,40 @@
 title: "Homework"
 author: "Lluis Ramon"
 date: "20 de abril de 2015"
-output: pdf_document
+output:
+  pdf_document:
+    number_sections: yes
+header-includes: \usepackage{float}
 ---
 
-# Introduction
+```{r initial_chunk, echo = FALSE, warning = FALSE, message = FALSE}
+library("knitr")
+library("ggplot2")
+library("xtable")
+library("dplyr")
+library("nlme")
+library("gridExtra")
+opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE)
 
-TODO(Mathieu): Reduced version
+options("xtable.comment" = FALSE)
+```
+
+```{r import_dataset}
+# Import dataset ----------------------------------------------------------
+cows <- read.table("data/cattle_mes dades.txt", header = TRUE, 
+                   sep = "\t", dec = ",", na.strings = "")
+
+names(cows) <- c("id", "dose", "pcv", "time", "nbirth")
+cows$dose <- factor(cows$dose, levels = c("L", "M", "H"))
+cows$pcv.b <- as.numeric(cows$pcv > 20)
+cows$pcv.f <- factor(cows$pcv > 20, labels = c("Unhealthy", "Healthy"))
+cows$time.f <- paste("Time", cows$time)
+cows.com <- na.omit(cows)
+cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
+```
+
+
+# Introduction
 
 Cattle are an important economic resource and also a major health factor in many countries. Therefore preventing diseases in a herd is vital. 
 
@@ -16,7 +44,6 @@ In this study we focus our interest on the parasite of trypanosomosis which can 
 One medicine, the Berenil, is used to cure the infected cattle. The aim of this research is to determine the efficiency of different doses of Berenil. Finding the most efficient dose, if such a dose exists, is critical when it comes to save both cattle and money. Here lies all the interest of our study. 
 
 To determine if a cow is ill or not a binary variable will be studied. This indicator can be 1 for a healthy cow or 0 for a sick one.
-
 
 
 # Objective
@@ -46,6 +73,8 @@ Since the gathering process of the data was unknown, several assumptions were ne
 
 # Outcome categorization
 
+TODO(Mathieu): Improve text
+
 The binary response was related with a cow being healthy or unhealthy. Taking this into considertation, the outcome was categorized using the following criteria:
 
 * [Literature review][]*: A healthy cow is estimated to have a PCV value ranging from 24 to 46.
@@ -53,37 +82,13 @@ The binary response was related with a cow being healthy or unhealthy. Taking th
 
 The threshold between healthy and unhelathy cow was set at a PCV value of 20. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was cathegorized as unhelathy.
 
-TODO(Mathieu): Improve text
-TODO(Gerard): Table to LaTeX. (You can remove Missing row if you want)
+Table \ref{table:freqs} shows a contingence table for the dichotomised response variable. Healthy category increases in time while unhealthy category decreases. A Missing value category for healthy/unhealthy cow i is also included. It can be seen that the number of missng values increases with time. This topic will be studied in further detail in section \ref{sec:Missing_data_analysis} Missing Data Analysis.
 
-```{r, echo=FALSE, warning=FALSE, results='asis'}
-# Load packages -----------------------------------------------------------
-library("nlme")
-# version 3.1-120 is required
-suppressMessages(library("dplyr"))
-library("ggplot2")
-library("tidyr")
-library("corrplot")
-library("grid")
-library("gridExtra")
-library(xtable)
-
-# Import dataset ----------------------------------------------------------
-cows <- read.table("data/cattle_mes dades.txt", header = TRUE, 
-                   sep = "\t", dec = ",", na.strings = "")
-
-names(cows) <- c("id", "dose", "pcv", "time", "nbirth")
-cows$dose <- factor(cows$dose, levels = c("L", "M", "H"))
-cows$pcv.b <- as.numeric(cows$pcv > 20)
-cows$pcv.f <- factor(cows$pcv > 20, labels = c("Unhealthy", "Healthy"))
-cows$time.f <- paste("Time", cows$time)
-cows.com <- na.omit(cows)
-cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
-
-a <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
-rownames(a)[3] <- "NA"
-taula <- xtable(a,
-                caption="Contingence table for the dichotomised response variable (rows) and the times.",
+```{r outcome_categorization, results='asis'}
+table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
+rownames(table_pcv_time)[3] <- "Missing value"
+taula <- xtable(table_pcv_time,
+                caption="Contingence table for the dichotomised response variable (rows) and times.",
                 label="table:freqs",
                 digits=0)
 print(taula, table.placement = "H")
@@ -126,6 +131,8 @@ TODO(Lluis)
 TODO(Mathieu)
 
 # Missing Data Analysis
+
+\label{sec:Missing_data_analysis}
 
 TODO(Gerard): Missing exploration
 
