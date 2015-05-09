@@ -101,47 +101,21 @@ summary(model01ar1)
 
 # GLMM --------------------------------------------------------------------
 
-# TODO(Mathieu)
-
 library("lme4")
-
-modelmm1 <- glmer(pcv.b~dose+time+(0+dose+time|id),data=cows.com,family=binomial)
-summary(modelmm1)
-
-modelmm2 <- glmer(pcv.b~dose+time+(0+time|idDose),data=cows.com,family=binomial)
-summary(modelmm2)
-
-modelmm3 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial)
-summary(modelmm3)
-# Warning + non significant
-
-# A lot of change in the st. dev depending on the group used.
 
 model.mm.1 <- glmer(pcv.b~dose*time+nbirth+(time|id/dose),data=cows.com,family=binomial)
 summary(model.mm.1)
-# cor -1
+# Warning: model failed to converge.
 
-model.mm.2 <- glmer(pcv.b~dose*time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+# The only model without any warnings regarding the convergence is the following one. 
+# It is necessary to use idDose as a groupin factor for the random effects because id/dose
+# does not work.
+
+model.mm.2 <- glmer(pcv.b~dose+time+(0+time|idDose),data=cows.com,family=binomial)
 summary(model.mm.2)
-# huge difference between the st dev of fixed effects and the one for random effects.
-# Is it a good sign when it comes to the importance of random effects?
-# every covariate is significant.
-# Meaning of the estimates?
 
+# We cannot take into account the second random effects (first by id then by dose).
 
-# Is the model stable?
-modelmm1 <- glmer(pcv.b~dose*time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
-summary(modelmm1)
-
-modelmm12 <- glmer(pcv.b~dose+(0+time|id/dose),data=cows.com,family=binomial)
-summary(modelmm12)
-
-modelmm13 <- glmer(pcv.b~time+(0+time|id/dose),data=cows.com,family=binomial)
-summary(modelmm13)
-
-modelmm14 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
-summary(modelmm14)
-# Correlation between covariates.
 
 # Missingnes --------------------------------------------------------------
 
