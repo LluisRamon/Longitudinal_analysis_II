@@ -187,7 +187,8 @@ In this section, the patterns of missing data will be discussed and analyzed, in
 
 Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data distribution over time and for each dose. Clearly, the fact that an observation is missing is associated with the dose and the time (fisher tests p-values= 0.005 and 0.007, respectively). Actually, there are more missings in low and medium dose than in high dose, and also, there are more missings as time increases.
 
-```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}"}
+```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
+
 par(cex=0.8)
 a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
 abline(h=0)
@@ -196,11 +197,22 @@ axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
 ```
 
 ```{r taula:nas, results='asis'}
-tau <- xtable(aggregate(is.na(cows$pcv.f), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3)],
-              caption="Number of missings in the outcome.",
+tau <- xtable(aggregate(list(Missing=is.na(cows$pcv.f), Available=!is.na(cows$pcv.f)), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3:4)],
+              caption="Number of missings and available data in the outcome.",
               label="taula:nas")
 print(tau, comment=F, include.rownames=F)
 ```
+
+For all this, one could think that missings are produced because of the death or drop out of the cow for any reason. This makes sense also when looking at Figure ????: the cow with ID 5, for example, would have died (or left the study) before taking the time 3 low dose measure, and if one assumes that its sequence of doses was H-L-M, this explains the missings for the medium dose. Following this rationale, cows number 1, 2 and 4 would have died at the time 3 of dose L (their sequence would end with L, since there are no more missings); cows number 3, 8 and 10 before time 3 of the medium dose (ending with M dose) and cows with ID 6 and 9 before time 2 of the L dose.
+
+The point in all this is that, if we think that the doses have different effects in the cows, then, the sequence of doses will affect the number of missings for a cow, introducing a huge source of bias in the data. Given that 8 of the 9 cows that have some missings have the first missing after being unhealthy, it would be logic to understand that the missings are produced because of the death or that the cow is dropped out from the study due to having too many health issues. With this assumption, the cows with worse prognostic would not have been analysed in the previous sections. Also, the missings could be understood like if the cow was not healthy, making the 
+
+Therefore, the pattern for missings in this data (maybe more than one) is, probably, missings not at random (MNAR).
+
+
+
+
+
 
 
 # Limitations and Further research
