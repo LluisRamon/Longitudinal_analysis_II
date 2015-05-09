@@ -38,14 +38,10 @@ cor(cows.w[, c("1", "2", "3")], use = "pairwise.complete.obs")
 
 library("geepack")
 
-?geese
-?geeglm
-
 # In help it is pointed in id the following
 # "Data are assumed to be sorted so that observations 
 # on a cluster are contiguous rows for all entities in the formula."
 cows.com <- cows.com %>% arrange(idDose)
-
 
 # model1 <- geeglm(pcv.b ~ time, id = idDose, data = cows.com,
 #                family = binomial, corstr = "unstructured", scale.fix = TRUE)
@@ -56,51 +52,51 @@ cows.com <- cows.com %>% arrange(idDose)
 
 model00 <- geeglm(pcv.b ~ dose, id = idDose, data = cows.com,
                  family = binomial, corstr = "exch", scale.fix = TRUE)
-model01 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
-                 family = binomial, corstr = "exch", scale.fix = TRUE)
-model02 <- geeglm(pcv.b ~ dose + nbirth, id = idDose, data = cows.com,
-                 family = binomial, corstr = "exch", scale.fix = TRUE)
-model03 <- geeglm(pcv.b ~ dose + time:dose, id = idDose, data = cows.com,
-                 family = binomial, corstr = "exch", scale.fix = TRUE)
 
 summary(model00)
+
+model01 <- update(model00, formula = ~. + time)
+model02 <- update(model00, formula = ~. + nbirth)
+
 summary(model01)
 summary(model02)
-summary(model03)
 
 # Criteria for comparision -> QIC
-# Scales changes a lot from one pseudo-likelihood from one to other
-
 library("MuMIn") # Package for GEE model selection (QIC)
-model.sel(model00, model01, model02, model03, rank = QIC)
+model.sel(model00, model01, model02, rank = QIC)
 
 anova(model00, model01)
 
 # Iteration 1
-model11 <- geeglm(pcv.b ~ dose*time, id = idDose, data = cows.com,
-                  family = binomial, corstr = "exch", scale.fix = TRUE)
-
-model12 <- geeglm(pcv.b ~ time + dose + nbirth, id = idDose, data = cows.com,
-               family = binomial, corstr = "exch", scale.fix = TRUE)
-
-model13 <- geeglm(pcv.b ~ time + dose + dose:nbirth, id = idDose, data = cows.com,
-                  family = binomial, corstr = "exch", scale.fix = TRUE)
-
-# nonstructure (weaker)
+model11 <- update(model01, formula = ~. + dose:time)
+model12 <- update(model01, formula = ~. + nbirth)
 
 summary(model11)
 summary(model12)
-summary(model13)
 
+anova(model01, model11)
+anova(model01, model12)
 
-anova(model1, model2)
-# Pseudo likelihood function
+# Model 01 is the selected one
 
-library("gee")
+# Choose best working correlation structure
 
-model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
-               family = binomial, corstr = "exch", scale.fix = TRUE)
+model01ind <- update(model01, corstr = "independence")
+model01ar1 <- update(model01, corstr = "ar1")
+# model01uns <- update(model01, corstr = "unstructured") 
+# Error en `contrasts<-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]) : 
+#   contrasts can be applied only to factors with 2 or more levels
 
+model.sel(model01, model01ar1, model01ind, rank = QIC)
+
+# All models quite the same
+summary(model01)
+summary(model01ind)
+
+# The independence model is the one with better QIC. 
+# TODO(Lluis): Think about interpretation.
+# Independence model smaller variance in non significative coefficient doseM
+# Exchangability smaller variance in significative coefficnets intercept, doseH and time
 
 # GLMM --------------------------------------------------------------------
 
