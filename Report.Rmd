@@ -4,6 +4,7 @@ author: "Lluis Ramon"
 date: "20 de abril de 2015"
 output:
   pdf_document:
+    fig_caption: yes
     number_sections: yes
 header-includes: \usepackage{float}
 ---
@@ -100,13 +101,16 @@ print(taula, table.placement = "H")
 
 # Statistical methods
 
-The methods used in the statistical analyses are detailed in this section. First a Generalized Estimating Equations and latter a Generalized Linear Mixed Model. An exploratory data analysis was performed before those regression methods.
+The methods used in the statistical analyses are detailed in this section. First a Generalized Estimating Equations (GEE) and latter a Generalized Linear Mixed Model. An exploratory data analysis was performed before those regression methods.
 
 ## GEE
+\label{subsec:method_GEE}
 
-The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
+The response variable was the binary PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
 
-From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested. 
+From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
+
+A classification table with predicted values and original data was created to asses how the model performed. Sensitivity and specificity are calculated for the final model.
 
 ## GLMM
 
@@ -124,7 +128,75 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 
 ## GEE 
 
-TODO(Lluis)
+TODO(Mathieu): Revise text. 
+
+As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose. Following a step-wise aproach time was included in the model. The number of births and its interaction with time or dose did not imporved the model. Neither it did to include the interaction between time and dose.
+
+The final model was:
+
+$$logit(p) = \beta_{0} + \beta_{1}time + \beta_2 doseMedium + \beta_3 doseHigh$$
+
+Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was chosen because of its smaller QIC.
+
+Table X shows the coefficient estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having Low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for dose covariate. Even medium dose was not significant in the model, we keept with it in the model because High dose was significant. As part of a further research \ref{sec:Further_research} is let the models with Low and Medium dose categories merged as a single category.
+
+TODO(Gerard): Create table with coefficients and alpha
+
+```{r geeglm}
+library("geepack")
+cows.com <- cows.com %>% arrange(idDose) # Package demands to be ordered
+model01ar1 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
+                 family = binomial, corstr = "ar1", scale.fix = TRUE)
+
+summary(model01ar1)
+# geeglm(formula = pcv.b ~ dose + time, family = binomial, data = cows.com, 
+#     id = idDose, corstr = "ar1", scale.fix = TRUE)
+# 
+#  Coefficients:
+#             Estimate Std.err  Wald Pr(>|W|)    
+# (Intercept)   -8.523   1.798 22.48  2.1e-06 ***
+# doseM          1.199   1.222  0.96   0.3266    
+# doseH          3.382   1.187  8.11   0.0044 ** 
+# time           3.205   0.629 25.97  3.5e-07 ***
+# ---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Scale is fixed.
+# 
+# Correlation: Structure = ar1  Link = identity 
+# 
+# Estimated Correlation Parameters:
+#       Estimate Std.err
+# alpha    0.171  0.0413
+# Number of clusters:   29   Maximum cluster size: 3 
+```
+
+
+Table X shows classification table for the choosed model. The model has a sensitivity of 0.911 and a specificity of 0.839.
+
+TODO(Gerard): Create table with classification
+
+```{r classifcation_GEE}
+pred.bin <- function(model){
+  
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+  
+}
+
+# library("caret")
+# sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+# specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+
+table(pred.bin(model01ar1), cows.com$pcv.b)
+
+#           Original data
+#               0  1
+# Prediccted 0 41  5
+# Prediccted 1  4 26
+```
+
 
 ## Random effects model
 
@@ -132,11 +204,44 @@ TODO(Mathieu)
 
 # Missing Data Analysis
 
+TODO(Gerard): Missing exploration, in processs
+
 \label{sec:Missing_data_analysis}
 
-TODO(Gerard): Missing exploration
+In this section, the patterns of missing data will be discussed and analyzed, in order to assess its influence in the analyses performed in previous sections.
+
+Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data distribution over time and for each dose. Clearly, the fact that an observation is missing is associated with the dose and the time (fisher tests p-values= 0.005 and 0.007, respectively). Actually, there are more missings in low and medium dose than in high dose, and also, there are more missings as time increases.
+
+```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
+
+par(cex=0.8)
+a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
+abline(h=0)
+axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
+axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+```
+
+```{r taula:nas, results='asis'}
+tau <- xtable(aggregate(list(Missing=is.na(cows$pcv.f), Available=!is.na(cows$pcv.f)), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3:4)],
+              caption="Number of missings and available data in the outcome.",
+              label="taula:nas")
+print(tau, comment=F, include.rownames=F)
+```
+
+For all this, one could think that missings are produced because of the death or drop out of the cow for any reason. This makes sense also when looking at Figure ????: the cow with ID 5, for example, would have died (or left the study) before taking the time 3 low dose measure, and if one assumes that its sequence of doses was H-L-M, this explains the missings for the medium dose. Following this rationale, cows number 1, 2 and 4 would have died at the time 3 of dose L (their sequence would end with L, since there are no more missings); cows number 3, 8 and 10 before time 3 of the medium dose (ending with M dose) and cows with ID 6 and 9 before time 2 of the L dose.
+
+The point in all this is that, if we think that the doses have different effects in the cows, then, the sequence of doses will affect the number of missings for a cow, introducing a huge source of bias in the data. Given that 8 of the 9 cows that have some missings have the first missing after being unhealthy, it would be logic to understand that the missings are produced because of the death or that the cow is dropped out from the study due to having too many health issues. With this assumption, the cows with worse prognostic would not have been analysed in the previous sections. Also, the missings could be understood like if the cow was not healthy, making the 
+
+Therefore, the pattern for missings in this data (maybe more than one) is, probably, missings not at random (MNAR).
+
+
+
+
+
+
 
 # Limitations and Further research
+\label{sec:Further_research}
 
 * Jacknife estimators for small sample better than sandwhich estimator
 

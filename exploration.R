@@ -77,6 +77,17 @@ summary(model12)
 anova(model01, model11)
 anova(model01, model12)
 
+# Some more models
+model13 <- update(model01, formula = ~. + nbirth*time)
+model14 <- update(model01, formula = ~. + nbirth*dose)
+
+summary(model13)
+summary(model14)
+
+model.sel(model01, model13, model14, rank = QIC)
+anova(model01, model13)
+anova(model01, model14)
+
 # Model 01 is the selected one
 
 # Choose best working correlation structure
@@ -99,6 +110,22 @@ summary(model01ar1)
 
 # Note: If cows.com was not sorted results in working correlation matrix were different!!!
 
+# Classification table
+
+pred.bin <- function(model){
+  
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+  
+}
+
+table(pred.bin(model01ar1), cows.com$pcv.b)
+
+library("caret")
+sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+
 # GLMM --------------------------------------------------------------------
 
 # TODO: Mathieu
@@ -119,13 +146,29 @@ summary(model.mm.2)
 # We cannot take into account the second random effects (first by id then by dose).
 
 
+
+
 # Missingnes --------------------------------------------------------------
+
+aggregate(is.na(cows$pcv.f), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3)]
+
+a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
+abline(h=0)
+axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
+axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+## Percentatge de missings en cada dosi i temps respecte del total de dades de la mostra.
+
+fisher.test(table(is.na(cows$pcv.f),cows$dose))
+fisher.test(table(is.na(cows$pcv.f),cows$time))
+
+# oagg <- order((agg <- aggregate(is.na(cows$pcv.f), list(cows$time, cows$dose, cows$id), sum))[,"x"])
+# agg <- agg[oagg,]
+# agg <- agg[order(agg[[3]]),]
 
 # Sensitivity analysis
 # Pattern
 
 # Try to impute
-
 
 
 
