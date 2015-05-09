@@ -101,6 +101,8 @@ summary(model01ar1)
 
 # GLMM --------------------------------------------------------------------
 
+# TODO: Mathieu
+
 library("lme4")
 
 model.mm.1 <- glmer(pcv.b~dose*time+nbirth+(time|id/dose),data=cows.com,family=binomial)
