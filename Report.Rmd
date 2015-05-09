@@ -104,9 +104,9 @@ The methods used in the statistical analyses are detailed in this section. First
 
 ## GEE
 
-The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows in time, these two variables were included in the model.
+The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
 
-From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
+From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested. 
 
 ## GLMM
 
@@ -154,9 +154,11 @@ TODO(Gerard): Missing exploration
 TODO(Gerard): Normalize citations
 
 * [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
-* [Højsgaard, Halekoh, Yan 2006, The R Package geepack for Generalized Estimating  Equations.][]
+* [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11][]
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
+* Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
+  http://CRAN.R-project.org/package=MuMIn
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
-[Højsgaard, Halekoh, Yan 2006, The R Package geepack for Generalized Estimating  Equations.]: http://www.jstatsoft.org/v15/i02/paper
+[Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper
 [Hardin & Hilbe 2002, Generalized Estimating Equations]: http://books.google.es/books/about/Generalized_Estimating_Equations.html?id=wxl7ajq8ymYC&redir_esc=y
