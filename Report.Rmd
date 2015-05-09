@@ -106,7 +106,9 @@ The methods used in the statistical analyses are detailed in this section. First
 
 The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
 
-From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested. 
+From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
+
+A classification table with predicted values and original data was created to asses how the model performed.
 
 ## GLMM
 
