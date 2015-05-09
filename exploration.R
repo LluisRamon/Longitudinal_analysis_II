@@ -122,6 +122,10 @@ pred.bin <- function(model){
 
 table(pred.bin(model01ar1), cows.com$pcv.b)
 
+library("caret")
+sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+
 # GLMM --------------------------------------------------------------------
 
 # TODO(Mathieu)
