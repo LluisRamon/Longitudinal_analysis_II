@@ -163,13 +163,29 @@ modelmm14 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
 summary(modelmm14)
 # Correlation between covariates.
 
+
+
 # Missingnes --------------------------------------------------------------
+
+aggregate(is.na(cows$pcv.f), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3)]
+
+a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
+abline(h=0)
+axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
+axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+## Percentatge de missings en cada dosi i temps respecte del total de dades de la mostra.
+
+fisher.test(table(is.na(cows$pcv.f),cows$dose))
+fisher.test(table(is.na(cows$pcv.f),cows$time))
+
+# oagg <- order((agg <- aggregate(is.na(cows$pcv.f), list(cows$time, cows$dose, cows$id), sum))[,"x"])
+# agg <- agg[oagg,]
+# agg <- agg[order(agg[[3]]),]
 
 # Sensitivity analysis
 # Pattern
 
 # Try to impute
-
 
 
 

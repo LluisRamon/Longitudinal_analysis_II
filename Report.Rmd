@@ -178,9 +178,29 @@ TODO(Mathieu)
 
 # Missing Data Analysis
 
+TODO(Gerard): Missing exploration, in processs
+
 \label{sec:Missing_data_analysis}
 
-TODO(Gerard): Missing exploration
+In this section, the patterns of missing data will be discussed and analyzed, in order to assess its influence in the analyses performed in previous sections.
+
+Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data distribution over time and for each dose. Clearly, the fact that an observation is missing is associated with the dose and the time (fisher tests p-values= 0.005 and 0.007, respectively). Actually, there are more missings in low and medium dose than in high dose, and also, there are more missings as time increases.
+
+```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}"}
+par(cex=0.8)
+a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
+abline(h=0)
+axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
+axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+```
+
+```{r taula:nas, results='asis'}
+tau <- xtable(aggregate(is.na(cows$pcv.f), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3)],
+              caption="Number of missings in the outcome.",
+              label="taula:nas")
+print(tau, comment=F, include.rownames=F)
+```
+
 
 # Limitations and Further research
 
