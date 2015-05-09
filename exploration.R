@@ -99,6 +99,18 @@ summary(model01ar1)
 
 # Note: If cows.com was not sorted results in working correlation matrix were different!!!
 
+# Classification table
+
+pred.bin <- function(model){
+  
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+  
+}
+
+table(pred.bin(model01ar1), cows.com$pcv.b)
+
 # GLMM --------------------------------------------------------------------
 
 # TODO(Mathieu)
