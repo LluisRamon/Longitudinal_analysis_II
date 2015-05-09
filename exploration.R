@@ -81,6 +81,9 @@ anova(model01, model12)
 model13 <- update(model01, formula = ~. + nbirth*time)
 model14 <- update(model01, formula = ~. + nbirth*dose)
 
+summary(model13)
+summary(model14)
+
 model.sel(model01, model13, model14, rank = QIC)
 anova(model01, model13)
 anova(model01, model14)
