@@ -77,6 +77,14 @@ summary(model12)
 anova(model01, model11)
 anova(model01, model12)
 
+# Some more models
+model13 <- update(model01, formula = ~. + nbirth*time)
+model14 <- update(model01, formula = ~. + nbirth*dose)
+
+model.sel(model01, model13, model14, rank = QIC)
+anova(model01, model13)
+anova(model01, model14)
+
 # Model 01 is the selected one
 
 # Choose best working correlation structure
