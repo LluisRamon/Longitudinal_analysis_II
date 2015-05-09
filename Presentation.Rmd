@@ -1,0 +1,167 @@
+---
+title: "Study of the efficacy of Berenil applied to trypanosomosis's infected cattle"
+author: "Gerard Castellà, Mathieu Marauri and Lluis Ramon"
+date: May 20th, 2015
+output: 
+  beamer_presentation:
+    theme: Berlin
+    colortheme: "default"
+    fonttheme: "default"
+---
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library("knitr")
+library("ggplot2")
+library("xtable")
+library("tidyr")
+library("dplyr")
+library("nlme")
+opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE)
+options("xtable.comment" = FALSE)
+```
+
+```{r}
+cows <- read.table("data/cattle_mes dades.txt", header = TRUE, 
+                   sep = "\t", dec = ",", na.strings = "")
+
+names(cows) <- c("id", "dose", "pcv", "time", "nbirth")
+cows$dose <- factor(cows$dose, levels = c("L", "M", "H"))
+cows$pcv.b <- as.numeric(cows$pcv > 20)
+cows$pcv.f <- factor(cows$pcv > 20, labels = c("Unhealthy", "Healthy"))
+cows$time.f <- paste("Time", cows$time)
+cows.com <- na.omit(cows)
+cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
+```
+
+
+# Introduction
+
+The trypanosomosis's parasite is responsible for a disease that affects cows.
+
+Effects of the disease:
+
+* anemia
+* loss of appetite
+* death
+
+# Objective
+
+> __Assess the efficacy of different doses of Berenil in infected cattle.__
+
+
+# Dataset
+
+* 10 cows
+* Response variable: Healthy / Unhealthy
+* Covariates: _dose_, _time_, _nbirth_
+* 3 dose levels (High, Medium, Low)
+
+# Outcome categorization
+
+* Literature review (healthy cow PCV 24-46)
+* Practical Modeling
+
+```{r outcome_categorization, results='asis'}
+table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
+rownames(table_pcv_time)[3] <- "Missing value"
+taula <- xtable(table_pcv_time, digits=0)
+print(taula, table.placement = "H")
+````
+
+# Assumptions
+
+```{r}
+library("ggplot2")
+library("scales")
+library("grid")
+arrows <- data.frame(x = 1, xend = 17, y = c(6, 10, 14), yend = c(6, 10, 14))
+df <- data.frame(x = c(0, 18), y = c(0, 18))
+garrows <- ggplot(aes(x, y), data = df) + geom_segment(aes(x = x, y = y, xend = xend, yend = yend), arrow = arrow(length = unit(0.3,"cm")), data = arrows) + ylim(c(0, 18)) + coord_cartesian(xlim = c(-2, 18))
+
+xdots <- c(2:4, 8:10, 12:14)
+x3dots <- c(xdots, xdots, xdots)
+ydots <- rep(c(6, 10, 14), each = 9)
+dose1 <- rep(c("Low", "Medium", "High"), each = 3)
+dose2 <- rep(c("Medium", "Low", "High"), each = 3)
+dose3 <- rep(c( "High", "Low", "Medium"), each = 3)
+
+timeIntervals <- data.frame(x = x3dots, y = ydots, dose = c(dose1, dose2, dose3))
+timeIntervals$dose <- factor(timeIntervals$dose , levels = c("Low", "Medium", "High"))
+g2 <- garrows + geom_point(aes(x = x, y = y, colour = dose), data = timeIntervals, size = 3)
+
+segments <- data.frame(x = x3dots, xend = x3dots + 1, y = ydots, yend = ydots, dose = c(dose1, dose2, dose3))
+segments$dose <- factor(segments$dose , levels = c("Low", "Medium", "High"))
+segments <- segments[segments$x %in% c(2, 3, 8, 9, 12, 13), ]
+g3 <- g2 + geom_segment(aes(x = x, y = y, xend = xend, yend = yend, colour = dose), data = segments, size = 1)
+# g3 <- g3 + ylab("") + xlab("time") + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank(), plot.background = element_rect(colour = "#DCDCDC"))
+g3 <- g3 + ylab("") + xlab("time") + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())
+g4 <- g3 +  scale_x_continuous(breaks = xdots,  labels = c(1:3, 1:3, 1:3))
+
+g4 <- g4 + theme_bw() + theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())
+  
+library("png")
+cow <- readPNG("images/cow.png")
+cowRed <- readPNG("images/cowRed.png")
+cowBlue <- readPNG("images/cowBlue.png")
+cowGreen <- readPNG("images/cowGreen.png")
+
+cowA1 <-  annotation_raster(cow, xmin = -1.3, xmax = -1.3 + 1.58, ymin = 5.4, ymax = 6.6)
+cowA2 <-  annotation_raster(cow, xmin = -1.3, xmax = -1.3 + 1.58, ymin = 9.4, ymax = 10.6)
+cowA3 <-  annotation_raster(cow, xmin = -1.3, xmax = -1.3 + 1.58, ymin = 13.4, ymax = 14.6)
+
+gCows <- g4 + cowA1 + cowA2 + cowA3
+
+cowT11 <-  annotation_raster(cowRed, xmin = 2.34, xmax = 2.34 + 1.32, ymin = 6.5, ymax = 7.5)
+cowT12 <-  annotation_raster(cowGreen, xmin = 2.34, xmax = 2.34 + 1.32, ymin = 10.5, ymax = 11.5)
+cowT13 <-  annotation_raster(cowBlue, xmin = 2.34, xmax = 2.34 + 1.32, ymin = 14.5, ymax = 15.5)
+
+cowT21 <-  annotation_raster(cowGreen, xmin = 8.34, xmax = 8.34 + 1.32, ymin = 6.5, ymax = 7.5)
+cowT22 <-  annotation_raster(cowRed, xmin = 8.34, xmax = 8.34 + 1.32, ymin = 10.5, ymax = 11.5)
+cowT23 <-  annotation_raster(cowRed, xmin = 8.34, xmax = 8.34 + 1.32, ymin = 14.5, ymax = 15.5)
+
+cowT31 <-  annotation_raster(cowBlue, xmin = 12.34, xmax = 12.34 + 1.32, ymin = 6.5, ymax = 7.5)
+cowT32 <-  annotation_raster(cowBlue, xmin = 12.34, xmax = 12.34 + 1.32, ymin = 10.5, ymax = 11.5)
+cowT33 <-  annotation_raster(cowGreen, xmin = 12.34, xmax = 12.34 + 1.32, ymin = 14.5, ymax = 15.5)
+
+gDef <- gCows + cowT11 + cowT12 + cowT13 +
+   cowT21 + cowT22 + cowT23 +
+   cowT31 + cowT32 + cowT33
+
+gDef + scale_color_discrete(guide = 'none') + theme(text = element_text(size = 25))
+```
+
+
+# Statistical methods
+
+* Generalized Estimating Equations (GEE) 
+* Generalized Linear Mixed Model (GLMM)
+* Missing Data Analysis
+
+# Generalized Estimating Equations
+
+
+# Generalized Linear Mixed Model
+
+# Missing Data Analysis
+
+
+# Conclusion
+
+* The high dose is much more efficient.
+* No difference between medium and low dose.
+* The number of births has a relative negative impact.
+
+# Limitations
+
+* Information could be added to the datset.
+* No control group.
+* Small sample. Bias by selection?
+* Missing values could be further analysed.
+
+
+
+--------
+
+![](images/cowFuny.jpg)
+
+> Thank you for your attention! 

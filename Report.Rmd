@@ -110,7 +110,7 @@ The response variable was the binary PCV to detect healthy and unhelathy cows. A
 
 From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
 
-A classification table with predicted values and original data was created to asses how the model performed.
+A classification table with predicted values and original data was created to asses how the model performed. Sensitivity and specificity are calculated for the final model.
 
 ## GLMM
 
@@ -128,18 +128,27 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 
 ## GEE 
 
-TODO(Lluis)
+TODO(Mathieu): Revise text. 
 
-As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose.  
+As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose. Following a step-wise aproach time was included in the model. The number of births and its interaction with time or dose did not imporved the model. Neither it did to include the interaction between time and dose.
 
+The final model was:
 
-logit(p) = beta dose + beta time
+$$logit(p) = \beta_{0} + \beta_{1}time + \beta_2 doseMedium + \beta_3 doseHigh$$
 
+Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was chosen because of its smaller QIC.
 
+Table X shows the coefficient estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having Low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for dose covariate. Even medium dose was not significant in the model, we keept with it in the model because High dose was significant. As part of a further research \ref{sec:Further_research} is let the models with Low and Medium dose categories merged as a single category.
 
-Table X shows estimates for the selected model.
+TODO(Gerard): Create table with coefficients and alpha
 
-```{r}
+```{r geeglm}
+library("geepack")
+cows.com <- cows.com %>% arrange(idDose) # Package demands to be ordered
+model01ar1 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
+                 family = binomial, corstr = "ar1", scale.fix = TRUE)
+
+summary(model01ar1)
 # geeglm(formula = pcv.b ~ dose + time, family = binomial, data = cows.com, 
 #     id = idDose, corstr = "ar1", scale.fix = TRUE)
 # 
@@ -163,9 +172,25 @@ Table X shows estimates for the selected model.
 ```
 
 
-Table X shows classification table for the choosed model.
+Table X shows classification table for the choosed model. The model has a sensitivity of 0.911 and a specificity of 0.839.
+
+TODO(Gerard): Create table with classification
 
 ```{r classifcation_GEE}
+pred.bin <- function(model){
+  
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+  
+}
+
+# library("caret")
+# sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+# specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+
+table(pred.bin(model01ar1), cows.com$pcv.b)
+
 #           Original data
 #               0  1
 # Prediccted 0 41  5
@@ -216,6 +241,7 @@ Therefore, the pattern for missings in this data (maybe more than one) is, proba
 
 
 # Limitations and Further research
+\label{sec:Further_research}
 
 * Jacknife estimators for small sample better than sandwhich estimator
 
