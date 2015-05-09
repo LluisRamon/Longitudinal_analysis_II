@@ -100,11 +100,12 @@ print(taula, table.placement = "H")
 
 # Statistical methods
 
-The methods used in the statistical analyses are detailed in this section. First a Generalized Estimating Equations and latter a Generalized Linear Mixed Model. An exploratory data analysis was performed before those regression methods.
+The methods used in the statistical analyses are detailed in this section. First a Generalized Estimating Equations (GEE) and latter a Generalized Linear Mixed Model. An exploratory data analysis was performed before those regression methods.
 
 ## GEE
+\label{subsec:method_GEE}
 
-The response variable was the cathegorized PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
+The response variable was the binary PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
 
 From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
 
@@ -127,6 +128,50 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 ## GEE 
 
 TODO(Lluis)
+
+As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose.  
+
+
+logit(p) = beta dose + beta time
+
+
+
+Table X shows estimates for the selected model.
+
+```{r}
+geeglm(formula = pcv.b ~ dose + time, family = binomial, data = cows.com, 
+    id = idDose, corstr = "ar1", scale.fix = TRUE)
+
+ Coefficients:
+            Estimate Std.err  Wald Pr(>|W|)    
+(Intercept)   -8.523   1.798 22.48  2.1e-06 ***
+doseM          1.199   1.222  0.96   0.3266    
+doseH          3.382   1.187  8.11   0.0044 ** 
+time           3.205   0.629 25.97  3.5e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Scale is fixed.
+
+Correlation: Structure = ar1  Link = identity 
+
+Estimated Correlation Parameters:
+      Estimate Std.err
+alpha    0.171  0.0413
+Number of clusters:   29   Maximum cluster size: 3 
+> 
+```
+
+
+Table X shows classification table for the choosed model.
+
+```{r classifcation_GEE}
+#           Original data
+#               0  1
+# Prediccted 0 41  5
+# Prediccted 1  4 26
+```
+
 
 ## Random effects model
 
