@@ -4,6 +4,7 @@ author: "Lluis Ramon"
 date: "20 de abril de 2015"
 output:
   pdf_document:
+    fig_caption: yes
     number_sections: yes
 header-includes: \usepackage{float}
 ---
