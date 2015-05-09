@@ -88,15 +88,16 @@ model01ar1 <- update(model01, corstr = "ar1")
 #   contrasts can be applied only to factors with 2 or more levels
 
 model.sel(model01, model01ar1, model01ind, rank = QIC)
+# All models quite the similar
 
-# All models quite the same
 summary(model01)
-summary(model01ind)
+summary(model01ar1)
 
-# The independence model is the one with better QIC. 
-# TODO(Lluis): Think about interpretation.
-# Independence model smaller variance in non significative coefficient doseM
-# Exchangability smaller variance in significative coefficnets intercept, doseH and time
+# The ar1 model is the one with better QIC. 
+# ar1 model smaller variance in dose coefficients
+# Exchangability smaller variance in intercept and time
+
+# Note: If cows.com was not sorted results in working correlation matrix were different!!!
 
 # GLMM --------------------------------------------------------------------
 
