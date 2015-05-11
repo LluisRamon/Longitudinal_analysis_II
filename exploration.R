@@ -130,21 +130,48 @@ specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
 
 library("lme4")
 
-model.mm.1 <- glmer(pcv.b~dose*time+nbirth+(time|id/dose),data=cows.com,family=binomial)
-summary(model.mm.1)
-# Warning: model failed to converge.
 
-# The only model without any warnings regarding the convergence is the following one. 
-# It is necessary to use idDose as a groupin factor for the random effects because id/dose
-# does not work.
+modelmm1 <- glmer(pcv.b~dose*time+nbirth+(0+time|idDose),data=cows.com,family=binomial)
+summary(modelmm1)
 
-model.mm.2 <- glmer(pcv.b~dose+time+(0+time|idDose),data=cows.com,family=binomial)
-summary(model.mm.2)
+modelmm12 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm12)
 
-# We cannot take into account the second random effects (first by id then by dose).
+modelmm13 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm13)
+
+modelmm14 <- glmer(pcv.b~time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm14)
+
+modelmm15 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm15)
+
+modelmm16 <- glmer(pcv.b~dose+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm16)
 
 
 
+
+modelmm2 <- glmer(pcv.b~dose*time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm2)
+
+modelmm21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm21)
+
+modelmm22 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm22)
+# Warning
+
+modelmm13 <- glmer(pcv.b~time+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm13)
+
+modelmm24 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm24)
+
+modelmm25 <- glmer(pcv.b~dose+(0+time|id/dose),data=cows.com,family=binomial)
+summary(modelmm25)
+
+# Almost stable for dose+time
 
 # Missingnes --------------------------------------------------------------
 
