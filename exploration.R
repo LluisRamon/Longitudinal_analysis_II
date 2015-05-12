@@ -105,12 +105,15 @@ model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
 # GLMM --------------------------------------------------------------------
 
 library("lme4")
+library("languageR")
+library("caret")
+library("sjPlot")
 
 # Random effect on the intercep and the slope.
 
 model.re.11 <- glmer(pcv.b~dose+(time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
 summary(model.re.11)
-# Correlation of -1.
+# Correlation of -1 and the model failed to converge.
 
 start11 <- unlist(getME(model.re.11,name="ST"))
 start12 <- unlist(getME(model.re.11,name="theta"))
@@ -174,7 +177,7 @@ summary(model.res.41)
 anova(model.res.21,model.res.41)
 # We keep the model with dose+time.
 
-finalModel <- model.re.21
+finalModel <- model.res.21
 summary(finalModel)
 
 orfixed <- c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
@@ -184,7 +187,6 @@ orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
 
 # Is it ok to have Odds Ratio either very large or very small (*10^16;*10^-37)?
 
-library("caret")
 
 pred.bin <- function(model){
   pred <- predict(model)
