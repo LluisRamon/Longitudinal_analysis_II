@@ -157,10 +157,15 @@ anova(model.res.11,model.res.31)
 finalModel <- model.res.11
 summary(finalModel)
 
-orfixed <- as.data.frame(c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
+orfixed <- as.table(c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
              "doseH"=exp(coef(finalModel)$id[[3]][1])))
 
 orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
+
+se <- sqrt(diag(vcov(finalModel)))
+
+tab <- cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel), 
+             sup = fixef(finalModel) + 1.96 *se)
 
 # Is it ok to have Odds Ratio either very large or very small (*10^16;*10^-37)?
 
