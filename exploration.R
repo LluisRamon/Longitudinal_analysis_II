@@ -106,7 +106,7 @@ model <- geese(pcv.b ~ dose*time + nbirth, id = idDose, data = cows.com,
 # GLMM --------------------------------------------------------------------
 
 library("lme4")
-library("languageR")
+library("xtable")
 library("caret")
 library("sjPlot")
 
@@ -157,8 +157,8 @@ anova(model.res.11,model.res.31)
 finalModel <- model.res.11
 summary(finalModel)
 
-orfixed <- c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
-             "doseH"=exp(coef(finalModel)$id[[3]][1]))
+orfixed <- as.data.frame(c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
+             "doseH"=exp(coef(finalModel)$id[[3]][1])))
 
 orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
 

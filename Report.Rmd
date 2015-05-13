@@ -16,6 +16,8 @@ library("xtable")
 library("dplyr")
 library("nlme")
 library("gridExtra")
+library("lme4")
+library("xtable")
 opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE)
 
 options("xtable.comment" = FALSE)
@@ -202,9 +204,61 @@ table(pred.bin(model01ar1), cows.com$pcv.b)
 
 TODO(Mathieu)
 
+### Selection of the model
+
+The GEE model does not take into account the particularity of each cow. In order to do so we performd a GLMM model. The first thing to know is what e will be the exact grouping factor. Our dataset provides us with two different ways of grouping our data. We have the idDose variable and the id then the dose which create a hierarchical model with two levels of random effects. In the last case we have a random effect for the cow among all the cows and a random effect for the dose among a given cow. We used the second case because the first one erases the subject specific effect and does as if we have 29 cows instead of only 10. 
+
+First we tried to have random intercept on both the intercept and the time but the model did not converge so we decided to take out the random effect on the intercept. This decision was also motivated by the fact that at the beginning all the cows are sick and we are not interested in the differences between them before the treatment but in the differences in their response to the treatment. The random effects are only used for the time covariate. It is impossible to have random effects on the dose since we would have too many parameters to estimate ragarding the number of observations. 
+
+Now that we know where to put random effects we can start building the model with the fixed effects. We start with the covariates used in the GEE model taht is to say with fixed effeects on the dose and on the time. We have the following model:
+
+  $$PCV.b_{i} = \beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \epsilon_{i}$$
+
+Then we tried to add a fixed effect on *nbirth* and on the interaction between *time* and *dose*. Table \ref{anovas:Random_slope} gives the results of the tests we performed to know which model was the best.
+
+TODO(Mathieu): change title
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & df & AIC & p-value \\ 
+  \hline
+$\beta_{0} + + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh$ & 6 & 36.592  &  \\ 
+ $\beta_{0} +  + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 nbirth$ & 7 & 38.335 & 0.6123 \\ 
+ $\beta_{0} +  (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 dose*time$ & 8 & 38.998 & 0.4506 \\  
+   \hline
+\end{tabular}
+\caption{Anova table comparing the different models with the one with fixed effects for time and dose.} 
+\label{anovas:Random_slope}
+\end{table}
+
+As a result we kept the initial model. Adding random effects on *nbirth* does not make sense since we do not have a fixed effect on *nbirth*. Besides even when trying to add a fixed effect and a random effect on it, the model has a hard time estimating the parameters. Therefore our final model is:
+
+  $$PCV.b_{i} = \beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \epsilon_{i}$$
+
+### Interpretation of the selected model.
+
+```{r glmer}
+
+model.res.11 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
+
+finalModel <- model.res.11
+
+orfixed <- as.data.frame(c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),"doseH"=exp(coef(finalModel)$id[[3]][1])))
+
+orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
+
+print(xtable(orfixed))
+```
+
+TODO(Mathieu): modify the xtable
+
+The values of the estimates of the model 
+
 # Missing Data Analysis
 
-TODO(Gerard): Missing exploration, in processs
+TODO(Gerard): Missing exploration, in process
 
 \label{sec:Missing_data_analysis}
 
