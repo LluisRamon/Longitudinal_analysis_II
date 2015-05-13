@@ -23,6 +23,7 @@ cows$time.f <- paste("Time", cows$time)
 cows.com <- na.omit(cows)
 cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
 
+
 table(cows$pcv.f , cows$time.f, useNA = "ifany")
 table(cows.com$pcv.f , cows.com$time.f)
 
@@ -111,16 +112,16 @@ library("sjPlot")
 
 # Random effect on the intercep and the slope.
 
-model.re.11 <- glmer(pcv.b~dose+(time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
+model.re.11 <- glmer(pcv.b~time+(time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
 summary(model.re.11)
-# Correlation of -1 and the model failed to converge.
+# Correlation of -1.
 
 start11 <- unlist(getME(model.re.11,name="ST"))
 start12 <- unlist(getME(model.re.11,name="theta"))
 start13 <- unlist(getME(model.re.11,name="beta"))
 start1 <- list(c(start11,start12,start13)) 
 
-model.re.12 <- glmer(pcv.b~time+(time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
+model.re.12 <- glmer(pcv.b~time+dose+(time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
 summary(model.re.11)
 # The model failed to converge and corr of -1.
 
@@ -129,55 +130,31 @@ summary(model.re.11)
 
 # Random effect only on the slope.
 
-model.res.11 <- glmer(pcv.b~dose+(0+time|id/dose),data=cows.com,family=binomial)
+model.res.11 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.11)
-# AIC = 57.9
+# AIC = 36.59
 
 start11 <- unlist(getME(model.res.11,name="ST"))
 start12 <- unlist(getME(model.res.11,name="theta"))
 start13 <- unlist(getME(model.res.11,name="beta"))
-start1 <- list(c(start11,start12,start13))
-
-model.res.12 <- glmer(pcv.b~time+(0+time|id/dose),data=cows.com,family=binomial)
-summary(model.res.12)
-# AIC = 63.7
-
-model.res.13 <- glmer(pcv.b~nbirth+(0+time|id/dose),data=cows.com,family=binomial)
-summary(model.res.13)
-# AIC = 65.9
-
-# We use the model with dose.
-model.res.21 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
-summary(model.res.21)
-# AIC = 36.59
-
-anova(model.res.11,model.res.21)
-
-model.res.22 <- glmer(pcv.b~dose+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
-summary(model.res.22)
-# AIC = 59.9
-
-start21 <- unlist(getME(model.res.21,name="ST"))
-start22 <- unlist(getME(model.res.21,name="theta"))
-start23 <- unlist(getME(model.res.21,name="beta"))
-start2 <- list(c(start21,start22,start23)) 
+start1 <- list(c(start11,start12,start13)) 
 
 # We use the model with dose+time.
-model.res.31 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
-summary(model.res.31)
+model.res.21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
+summary(model.res.21)
 # AIC = 38.3
 
-anova(model.res.21,model.res.31)
+anova(model.res.11,model.res.21)
 # model with dose+time is better.
 
-model.res.41 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
-summary(model.res.41)
+model.res.31 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
+summary(model.res.31)
 # AIC = 39
 
-anova(model.res.21,model.res.41)
+anova(model.res.21,model.res.31)
 # We keep the model with dose+time.
 
-finalModel <- model.res.21
+finalModel <- model.res.11
 summary(finalModel)
 
 orfixed <- c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),
@@ -186,7 +163,6 @@ orfixed <- c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(final
 orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
 
 # Is it ok to have Odds Ratio either very large or very small (*10^16;*10^-37)?
-
 
 pred.bin <- function(model){
   pred <- predict(model)
