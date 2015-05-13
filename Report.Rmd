@@ -1,7 +1,7 @@
 ---
-title: "Homework"
-author: "Lluis Ramon"
-date: "20 de abril de 2015"
+title: "Study of the efficacy of Berenil applied to trypanosomosis's infected cattle using a binary outcome"
+author: "Gerard Castellà, Mathieu Marauri and Lluis Ramon"
+date: \today
 output:
   pdf_document:
     fig_caption: yes
@@ -38,6 +38,7 @@ cows.com <- na.omit(cows)
 cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
 ```
 
+\newpage
 
 # Introduction
 
