@@ -256,7 +256,9 @@ tab <- exp(cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel),
 print(xtable(tab, caption = "Odds ratio with their confidence interval. \\label{tab:OddsRatio}"), comment = FALSE, table.placement = "H")
 ```
 
-It appaers that an increase of unit in time increases the odds ratio by XXXXXXX which means that it is xxxxxxxxxx times more likely to be healthy than unhealthy. The random effect son the time add variability to the effect of time depending on the id and on the dose. Table XX gives the interval in which the values lie.
+It appaers that an increase of one unit in time increases the odds ratio by 5.59e+13 which means that it is 5.59e+13 times more likely to be healthy than unhealthy when the time increases. The random effects on the time add variability to the effect of time depending on the id and on the dose. it means that cows have a different response to the treatment as regard to the time. The use of the high dose has an equivalent high impact on the probability to be healthy.
+
+Extremly high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage.
 
 
 # Missing Data Analysis
