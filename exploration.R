@@ -140,18 +140,18 @@ start13 <- unlist(getME(model.res.11,name="beta"))
 start1 <- list(c(start11,start12,start13)) 
 
 # We use the model with dose+time.
-model.res.21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
+model.res.21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.21)
 # AIC = 38.3
 
 anova(model.res.11,model.res.21)
 # model with dose+time is better.
 
-model.res.31 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start2,control=glmerControl(optimizer="bobyqa"))
+model.res.31 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.31)
 # AIC = 39
 
-anova(model.res.21,model.res.31)
+anova(model.res.11,model.res.31)
 # We keep the model with dose+time.
 
 finalModel <- model.res.11
