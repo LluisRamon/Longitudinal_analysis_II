@@ -202,8 +202,6 @@ table(pred.bin(model01ar1), cows.com$pcv.b)
 
 ## Random effects model
 
-TODO(Mathieu)
-
 ### Selection of the model
 
 The GEE model does not take into account the particularity of each cow. In order to do so we performd a GLMM model. The first thing to know is what e will be the exact grouping factor. Our dataset provides us with two different ways of grouping our data. We have the idDose variable and the id then the dose which create a hierarchical model with two levels of random effects. In the last case we have a random effect for the cow among all the cows and a random effect for the dose among a given cow. We used the second case because the first one erases the subject specific effect and does as if we have 29 cows instead of only 10. 
@@ -260,6 +258,7 @@ It appaers that an increase of one unit in time increases the odds ratio by 5.59
 
 Extremly high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage.
 
+To conclue one could say that the more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in differents ways to the treatment as shown by the random effects on time.
 
 # Missing Data Analysis
 
