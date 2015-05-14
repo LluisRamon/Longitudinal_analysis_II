@@ -217,7 +217,23 @@ fisher.test(table(is.na(cows$pcv.f),cows$time))
 # agg <- agg[oagg,]
 # agg <- agg[order(agg[[3]]),]
 
-# Sensitivity analysis
 # Pattern
+
+# Monotone missing pattern
+
+# The definition of monotonic missing is that, once the subject dropped out he
+# will drop out forever, while for non-monotonic missing the subject may 
+# come back or be missing again.
+
+# Patrons, indicar número per temps
+# 
+# o o o
+# o o m
+# o m m
+# m m m
+
+# Sensitivity analysis
+
+# Atenea Tesi Doctoral Carles Pi
 
 # Try to impute
