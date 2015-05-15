@@ -1,7 +1,7 @@
 ---
-title: "Study of the efficacy of Berenil applied to trypanosomosis's infected cattle using a binary outcome"
+title: Study of the efficacy of Berenil applied to trypanosomosis's infected cattle
+  using a binary outcome
 author: "Gerard Castellà, Mathieu Marauri and Lluis Ramon"
-date: \today
 output:
   pdf_document:
     fig_caption: yes
@@ -78,16 +78,14 @@ Since the gathering process of the data was unknown, several assumptions were ne
 
 # Outcome categorization
 
-TODO(Mathieu): Improve text
-
-The binary response was related with a cow being healthy or unhealthy. Taking this into considertation, the outcome was categorized using the following criteria:
+The binary response was related with a cow being healthy or unhealthy. Taking this into consideration, the outcome was categorized using the following criteria:
 
 * [Literature review][]*: A healthy cow is estimated to have a PCV value ranging from 24 to 46.
 * Practical Modeling: As the binary response should be modeled in following sections, a suitable one was searched. To this end, a trial and error with a cutoff ranging from 20 to 24 was explored.
 
-The threshold between healthy and unhelathy cow was set at a PCV value of 20. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was categorized as unhealthy.
+The threshold between healthy and unhealthy cow was set at a PCV value of 20. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was categorized as unhealthy.
 
-Table \ref{table:freqs} shows a contingency table for the dichotomised response variable. Healthy category increases in time while unhealthy category decreases. A Missing value category is also included. It can be seen that the number of missing values increases with time. This topic will be studied in further detail in section \ref{sec:Missing_data_analysis} Missing Data Analysis.
+Table \ref{table:freqs} shows a contingency table for the dichotomised response variable. The number of cows in the healthy category increases in time while the number of unhealthy ones decreases. A Missing value category is also included. One can notice that the number of missing values increases with time. This topic will be further studied in section \ref{sec:Missing_data_analysis} Missing Data Analysis.
 
 ```{r outcome_categorization, results='asis'}
 table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
@@ -117,10 +115,13 @@ From this initial model, a forward step-wise method was carried for the model se
 A classification table with predicted values and original data was created to asses how the model performed. Sensitivity and specificity are calculated for the final model.
 
 ## GLMM
+\label{subsec:method_GLMM}
 
-TODO(Mathieu)
+In order to take into account the specific effect due to the cow itself we had to introduce random effects in our model. To do so we performed a Generalized Linear Mixed Model. 
 
-IN order to take into account the specific effect due to the cow itself we had to introduce random effects in our model. To do that we performed a Generalized Linear Mixed Model. We kept the fixed effects found in the previous part and add random effects on the intercept and the time. Since we have two way of grouping our data we have a random effect for the id and among the values of a given cow we have random effects for the kind of dose that was used. 
+We start by having fixed effects on the covariates selected in the model obtained with the GEE model. A grouping factor is needed to add random effects. The dataset gives us two different grouping factor: the *idDose* and the *dose* by *id*. The choice will be made in the section \label{subsec:RandomEffects_Selection} Selection of the model.
+
+A similar process that the one used in the GEE to select the covariates will be performed to select the random effects. The models will be compared using a QuasiLikelihood ratio test if they are nested or the Akaike Information Criterion if they are not.  
 
 
 ## Transition Models
@@ -142,7 +143,7 @@ $$logit(p) = \beta_{0} + \beta_{1}time + \beta_2 doseMedium + \beta_3 doseHigh$$
 
 Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was chosen because of its smaller QIC.
 
-Table X shows the coefficient estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having Low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for dose covariate. Even medium dose was not significant in the model, we keept with it in the model because High dose was significant. As part of a further research \ref{sec:Further_research} is let the models with Low and Medium dose categories merged as a single category.
+Table X shows the coefficient estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having Low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for dose covariate. Even medium dose was not significant in the model, we kept it in the model because High dose was significant. As part of a further research \ref{sec:Further_research} is let the models with Low and Medium dose categories merged as a single category.
 
 TODO(Gerard): Create table with coefficients and alpha
 
@@ -205,6 +206,7 @@ table(pred.bin(model01ar1), cows.com$pcv.b)
 ## Random effects model
 
 ### Selection of the model
+\label{subsec:RandomEffects_Selection}
 
 The GEE model does not take into account the particularity of each cow. In order to do so we performed a GLMM model. The first thing to know is what e will be the exact grouping factor. Our dataset provides us with two different ways of grouping our data. We have the idDose variable and the id then the dose which create a hierarchical model with two levels of random effects. In the last case we have a random effect for the cow among all the cows and a random effect for the dose among a given cow. We used the second case because the first one erases the subject specific effect and does as if we have 29 cows instead of only 10. 
 
