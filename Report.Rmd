@@ -323,6 +323,7 @@ TODO(Gerard): Normalize citations
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
   http://CRAN.R-project.org/package=MuMIn
+* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed 
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
 [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper
