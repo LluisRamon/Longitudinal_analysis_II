@@ -225,7 +225,7 @@ fisher.test(table(is.na(cows$pcv.f),cows$time))
 # will drop out forever, while for non-monotonic missing the subject may 
 # come back or be missing again.
 
-# Patrons, indicar número per temps
+# Patrons, indicar número
 # 
 # o o o
 # o o m
@@ -234,6 +234,12 @@ fisher.test(table(is.na(cows$pcv.f),cows$time))
 
 # Sensitivity analysis
 
-# Atenea Tesi Doctoral Carles Pi
+# Look at Atenea: Tesi Doctoral Carles Pi pag 126 and so on.
 
+# logit(R) = alpha_0 + alpha_1 PCV + alpha_2 X
+# Define a range of possible odds ratio for PCV (alpha_1) and calculate alpha_2 to see if it changes
+# X = covariate
+# R = missing indicator
+
+# If we impute we are assuming MAR -> better a sensibility analisis
 # Try to impute
