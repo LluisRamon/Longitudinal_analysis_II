@@ -1,11 +1,12 @@
 ---
-title: "Homework"
-author: "Lluis Ramon"
-date: "20 de abril de 2015"
+title: Study of the efficacy of Berenil applied to trypanosomosis's infected cattle
+  using a binary outcome
+author: "Gerard Castellà, Mathieu Marauri and Lluis Ramon"
 output:
   pdf_document:
     fig_caption: yes
     number_sections: yes
+    toc: yes
 header-includes: \usepackage{float}
 ---
 
@@ -16,6 +17,8 @@ library("xtable")
 library("dplyr")
 library("nlme")
 library("gridExtra")
+library("lme4")
+library("xtable")
 opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE)
 
 options("xtable.comment" = FALSE)
@@ -35,6 +38,7 @@ cows.com <- na.omit(cows)
 cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
 ```
 
+\newpage
 
 # Introduction
 
@@ -74,16 +78,14 @@ Since the gathering process of the data was unknown, several assumptions were ne
 
 # Outcome categorization
 
-TODO(Mathieu): Improve text
-
-The binary response was related with a cow being healthy or unhealthy. Taking this into considertation, the outcome was categorized using the following criteria:
+The binary response was related with a cow being healthy or unhealthy. Taking this into consideration, the outcome was categorized using the following criteria:
 
 * [Literature review][]*: A healthy cow is estimated to have a PCV value ranging from 24 to 46.
 * Practical Modeling: As the binary response should be modeled in following sections, a suitable one was searched. To this end, a trial and error with a cutoff ranging from 20 to 24 was explored.
 
-The threshold between healthy and unhelathy cow was set at a PCV value of 20. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was cathegorized as unhelathy.
+The threshold between healthy and unhealthy cow was set at a PCV value of 20. If the PCV value was bigger it was categorized as healthy, if it was lower or equal it was categorized as unhealthy.
 
-Table \ref{table:freqs} shows a contingence table for the dichotomised response variable. Healthy category increases in time while unhealthy category decreases. A Missing value category for healthy/unhealthy cow i is also included. It can be seen that the number of missng values increases with time. This topic will be studied in further detail in section \ref{sec:Missing_data_analysis} Missing Data Analysis.
+Table \ref{table:freqs} shows a contingency table for the dichotomised response variable. The number of cows in the healthy category increases in time while the number of unhealthy ones decreases. A Missing value category is also included. One can notice that the number of missing values increases with time. This topic will be further studied in section \ref{sec:Missing_data_analysis} Missing Data Analysis.
 
 ```{r outcome_categorization, results='asis'}
 table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
@@ -106,17 +108,20 @@ The methods used in the statistical analyses are detailed in this section. First
 ## GEE
 \label{subsec:method_GEE}
 
-The response variable was the binary PCV to detect healthy and unhelathy cows. As we wanted to estimate the effect of dose in healthy/unhelathy cows, these two variables were included in the model.
+The response variable was the binary PCV to detect healthy and unhealthy cows. As we wanted to estimate the effect of dose in healthy/unhealthy cows, these two variables were included in the model.
 
-From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared quasilikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
+From this initial model, a forward step-wise method was carried for the model selection, including additional covariates or interactions between them. The models were compared QuasiLikelihood ratio test when nested and with QuasiLikelihood Information Criteria (Pan 2001) when non-nested.
 
 A classification table with predicted values and original data was created to asses how the model performed. Sensitivity and specificity are calculated for the final model.
 
 ## GLMM
+\label{subsec:method_GLMM}
 
-TODO(Mathieu)
+In order to take into account the specific effect due to the cow itself we had to introduce random effects in our model. To do so we performed a Generalized Linear Mixed Model. 
 
-IN order to take into account the specific effect due to the cow itself we had to introduce random effects in our model. To do that we performed a Generalised Linear Mixed Model. We kept the fixed effects found in the previous part and add random effects on the intercept and the time. Since we have two way of grouping our data we have a random effect for the id and among the values of a given cow we have random effects for the kind of dose that was used. 
+We start by having fixed effects on the covariates selected in the model obtained with the GEE model. A grouping factor is needed to add random effects. The dataset gives us two different grouping factor: the *idDose* and the *dose* by *id*. The choice will be made in the section \ref{subsec:RandomEffects_Selection} Selection of the model.
+
+A similar process that the one used in the GEE to select the covariates will be performed to select the random effects. The models will be compared using a QuasiLikelihood ratio test if they are nested or the Akaike Information Criterion if they are not.  
 
 
 ## Transition Models
@@ -126,11 +131,9 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 
 # Results
 
-## GEE 
+## GEE  
 
-TODO(Mathieu): Revise text. 
-
-As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose. Following a step-wise aproach time was included in the model. The number of births and its interaction with time or dose did not imporved the model. Neither it did to include the interaction between time and dose.
+As explained in the section \ref{subsec:method_GEE}, a starting model for PCV was fitted with dose. Following a step-wise approach, time was included in the model. The number of births and its interaction with time or dose did not improved the model. Adding the interaction between *time* and *dose* did not improve the model either. 
 
 The final model was:
 
@@ -138,7 +141,7 @@ $$logit(p) = \beta_{0} + \beta_{1}time + \beta_2 doseMedium + \beta_3 doseHigh$$
 
 Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was chosen because of its smaller QIC.
 
-Table X shows the coefficient estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having Low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for dose covariate. Even medium dose was not significant in the model, we keept with it in the model because High dose was significant. As part of a further research \ref{sec:Further_research} is let the models with Low and Medium dose categories merged as a single category.
+Table X shows the coefficients estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for the *dose* covariate. Even if medium dose was not significant in the model, we kept it in the model because High dose was significant. The merging of the medium dose and the low dose into one covariate to be compared to the high dose is something that could be done in the section   \ref{sec:Further_research} Further research.
 
 TODO(Gerard): Create table with coefficients and alpha
 
@@ -172,7 +175,7 @@ summary(model01ar1)
 ```
 
 
-Table X shows classification table for the choosed model. The model has a sensitivity of 0.911 and a specificity of 0.839.
+Table X shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
 
 TODO(Gerard): Create table with classification
 
@@ -200,7 +203,65 @@ table(pred.bin(model01ar1), cows.com$pcv.b)
 
 ## Random effects model
 
-TODO(Mathieu)
+### Selection of the model
+\label{subsec:RandomEffects_Selection}
+
+The GEE model does not take into account the particularity of each cow. In order to do so we performed a GLMM model. As explained in the section \ref{subsec:method_GLMM} the first thing to know is what will be the exact grouping factor. Our dataset provides us with two different ways of grouping our data. We have the idDose variable and the id then the dose which create a hierarchical model with two levels of random effects. In the last case we have a random effect for the cow among all the cows and a random effect for the dose among a given cow. We used the second case because the first one erases the subject specific effect and does as if we have 29 cows instead of only 10. 
+
+First we tried to have random intercept on both the intercept and the time but the model did not converge so we decided to take out the random effect on the intercept. This decision was also motivated by the fact that at the beginning all the cows are sick and we are not interested in the differences between them before the treatment but in the differences in their response to the treatment. The aim of this study is to assess the efficiency of the treatment so it is of a crucial importance to add random effects for the intercept. The random effects are only used for the time covariate. It is impossible to have random effects on the dose since we would have too many parameters to estimate regarding the number of observations. 
+
+Now that we know where to put random effects we can start building the model with the fixed effects. We start with the covariates used in the GEE model that is to say with fixed effects on the dose and on the time. We have the following model:
+
+  $$PCV.b_{i} = \beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \epsilon_{i}$$
+
+Then we tried to add a fixed effect on *nbirth* and on the interaction between *time* and *dose*. Table \ref{anovas:Random_slope} gives the results of the tests we performed to know which model was the best.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & df & AIC & p-value \\ 
+  \hline
+$\beta_{0} + + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh$ & 6 & 36.592  &  \\ 
+ $\beta_{0} +  + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 nbirth$ & 7 & 38.335 & 0.6123 \\ 
+ $\beta_{0} +  (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 dose*time$ & 8 & 38.998 & 0.4506 \\  
+   \hline
+\end{tabular}
+\caption{Anova table comparing the different models with the one with fixed effects for time and dose.} 
+\label{anovas:Random_slope}
+\end{table}
+
+As a result we kept the initial model. Adding random effects on *nbirth* does not make sense since we do not have a fixed effect on *nbirth*. Besides even when trying to add a fixed effect and a random effect on it, the model has a hard time estimating the parameters. Therefore our final model is:
+
+  $$PCV.b_{i} = \beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \epsilon_{i}$$
+
+### Interpretation of the selected model.
+
+In table \ref{tab:OddsRatio} are presented the values of the odds ratio for the fixed effects of the model.
+
+```{r glmer, results='asis'}
+
+model.res.11 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
+
+finalModel <- model.res.11
+
+orfixed <- as.table(c("intercept"=exp(coef(finalModel)$id[[1]][1]),"doseM"=exp(coef(finalModel)$id[[2]][1]),"doseH"=exp(coef(finalModel)$id[[3]][1])))
+
+orrandom <- exp(c(coef(finalModel)$`dose:id`[[4]],coef(finalModel)$id[[4]]))
+
+se <- sqrt(diag(vcov(finalModel)))
+tab <- exp(cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel), 
+             sup = fixef(finalModel) + 1.96 *se))
+
+print(xtable(tab, caption = "Odds ratio with their confidence interval. \\label{tab:OddsRatio}"), comment = FALSE, table.placement = "H")
+```
+
+It appears that an increase of one unit in time increases the odds ratio by 5.59e+13 which means that it is 5.59e+13 times more likely to be healthy than unhealthy when the time increases. The random effects on the time add variability to the effect of time depending on the id and on the dose. it means that cows have a different response to the treatment as regard to the time. The use of the high dose has an equivalent high impact on the probability to be healthy.
+
+Extremely high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage.
+
+To conclude one could say that the more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time.
+
 
 # Missing Data Analysis
 
@@ -278,6 +339,7 @@ TODO(Gerard): Normalize citations
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
   http://CRAN.R-project.org/package=MuMIn
+* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed 
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
 [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper

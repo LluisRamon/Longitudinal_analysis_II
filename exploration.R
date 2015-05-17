@@ -51,7 +51,7 @@ cows.com <- cows.com %>% arrange(idDose)
 # Not converging with the unstructured
 
 model00 <- geeglm(pcv.b ~ dose, id = idDose, data = cows.com,
-                 family = binomial, corstr = "exch", scale.fix = TRUE)
+                  family = binomial, corstr = "exch", scale.fix = TRUE)
 
 summary(model00)
 
@@ -129,21 +129,75 @@ specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
 # GLMM --------------------------------------------------------------------
 
 library("lme4")
+library("xtable")
+library("caret")
+library("sjPlot")
 
-model.mm.1 <- glmer(pcv.b~dose*time+nbirth+(time|id/dose),data=cows.com,family=binomial)
-summary(model.mm.1)
-# Warning: model failed to converge.
+# Random effect on the intercep and the slope.
 
-# The only model without any warnings regarding the convergence is the following one. 
-# It is necessary to use idDose as a groupin factor for the random effects because id/dose
-# does not work.
+model.re.11 <- glmer(pcv.b~time+(time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
+summary(model.re.11)
+# Correlation of -1.
 
-model.mm.2 <- glmer(pcv.b~dose+time+(0+time|idDose),data=cows.com,family=binomial)
-summary(model.mm.2)
+start11 <- unlist(getME(model.re.11,name="ST"))
+start12 <- unlist(getME(model.re.11,name="theta"))
+start13 <- unlist(getME(model.re.11,name="beta"))
+start1 <- list(c(start11,start12,start13)) 
 
-# We cannot take into account the second random effects (first by id then by dose).
+model.re.12 <- glmer(pcv.b~time+dose+(time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
+summary(model.re.11)
+# The model failed to converge and corr of -1.
+
+# We will not use a random intercept.
 
 
+# Random effect only on the slope.
+
+model.res.11 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
+summary(model.res.11)
+# AIC = 36.59
+
+start11 <- unlist(getME(model.res.11,name="ST"))
+start12 <- unlist(getME(model.res.11,name="theta"))
+start13 <- unlist(getME(model.res.11,name="beta"))
+start1 <- list(c(start11,start12,start13)) 
+
+# We use the model with dose+time.
+model.res.21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
+summary(model.res.21)
+# AIC = 38.3
+
+anova(model.res.11,model.res.21)
+# model with dose+time is better.
+
+model.res.31 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
+summary(model.res.31)
+# AIC = 39
+
+anova(model.res.11,model.res.31)
+# We keep the model with dose+time.
+
+finalModel <- model.res.11
+summary(finalModel)
+
+se <- sqrt(diag(vcov(finalModel)))
+
+tab <- exp(cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel), 
+                 sup = fixef(finalModel) + 1.96 *se))
+
+# Is it ok to have Odds Ratio either very large or very small (*10^16;*10^-37)?
+
+pred.bin <- function(model){
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+}
+
+prediction <- pred.bin(finalModel)
+
+confusionMatrix(data=prediction,reference=cows.com$pcv.b)
+
+# Is it ok to have a sensitivity and a specificity of 1?
 
 
 # Missingnes --------------------------------------------------------------
@@ -163,10 +217,29 @@ fisher.test(table(is.na(cows$pcv.f),cows$time))
 # agg <- agg[oagg,]
 # agg <- agg[order(agg[[3]]),]
 
-# Sensitivity analysis
 # Pattern
 
+# Monotone missing pattern
+
+# The definition of monotonic missing is that, once the subject dropped out he
+# will drop out forever, while for non-monotonic missing the subject may 
+# come back or be missing again.
+
+# Patrons, indicar número
+# 
+# o o o
+# o o m
+# o m m
+# m m m
+
+# Sensitivity analysis
+
+# Look at Atenea: Tesi Doctoral Carles Pi pag 126 and so on.
+
+# logit(R) = alpha_0 + alpha_1 PCV + alpha_2 X
+# Define a range of possible odds ratio for PCV (alpha_1) and calculate alpha_2 to see if it changes
+# X = covariate
+# R = missing indicator
+
+# If we impute we are assuming MAR -> better a sensibility analisis
 # Try to impute
-
-
-
