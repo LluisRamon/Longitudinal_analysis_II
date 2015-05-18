@@ -26,7 +26,7 @@ cows.com$idDose <- as.factor(paste(cows.com$id, cows.com$dose, sep = "_"))
 table(cows$pcv.f , cows$time.f, useNA = "ifany")
 table(cows.com$pcv.f , cows.com$time.f)
 
-qplot(factor(time), pcv.b, data = cows.com, group = id, geom = c("line", "point"), facets = id~ dose, 
+qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose, 
       colour = factor(id)) + scale_color_discrete(guide = 'none')
 
 # Covariance and Correlation Structure ------------------------------------

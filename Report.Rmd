@@ -75,6 +75,7 @@ Since the gathering process of the data was unknown, several assumptions were ne
 * For a given cow, the previous treatments (high, medium or low) do not affect the following ones.
 * Time intervals are the same and fixed.
 
+\newpage
 
 # Outcome categorization
 
@@ -99,7 +100,7 @@ print(taula, table.placement = "H")
 
 [Literature review]:http://research.vet.upenn.edu/Dairy/ClinicalPathology/tabid/3848/Default.aspx
 
-
+\vspace{1.5cm}
 
 # Statistical methods
 
@@ -129,7 +130,22 @@ A similar process that the one used in the GEE to select the covariates will be 
 TODO(Lluis): Add model information.
 TODO(All): Include pros/cons with our data. Decide if our data could be modeled using this kinds of models.
 
+\vspace{1.5cm}
+
 # Results
+
+## Descriptive analysis
+
+Knowing the general behavior of the data is a starting point to every other analysis. Figure \ref{fig:data} shows the value of the binary outcome for all the cows in the dataset.
+
+```{r figdata, fig.cap="Representation of the data. \\label{fig:data}",, fig.pos = "H", fig.height = 4, fig.width = 6}
+qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose, 
+      colour = factor(id)) + scale_color_discrete(guide = 'none')
+```
+
+It clearly appears that cows which are treated with the low dose are unhealthy at time 1 and 2 (excep fot cow 7). The second major observation is that at time 3 cows that are treated with the high dose are healthy. This is still true for almost every cows at time 2. 
+
+The effect of the treatment can be seen when a given cow goes from unhealthy to healthy. Such an evolution appears 18 times. That is to say that among the 30 "different" cows (identified by the variable *idDose*) 60% have a positive reaction to the treatment. The healing of the cows is done after the first injection of Berenil in 47% of the cases.
 
 ## GEE  
 
@@ -262,6 +278,8 @@ Extremely high (or low) values were obtained because there are only twice as muc
 
 To conclude one could say that the more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time.
 
+\vspace{1.5cm}
+
 # Missing Data Analysis
 
 TODO(Gerard): Missing exploration, in process
@@ -294,11 +312,7 @@ The point in all this is that, if we think that the doses have different effects
 
 Therefore, the pattern for missing values in this data (maybe more than one) is, probably, missing not at random (MNAR).
 
-
-
-
-
-
+\vspace{1.5cm}
 
 # Limitations and Further research
 \label{sec:Further_research}
@@ -313,6 +327,8 @@ Therefore, the pattern for missing values in this data (maybe more than one) is,
 > It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
 
 * Compare GEE model with GLMM. Coefficients and SE.
+
+\vspace{1.5cm}
 
 # Bibliography
 
