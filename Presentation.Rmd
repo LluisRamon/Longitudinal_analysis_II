@@ -56,18 +56,6 @@ Effects of the disease:
 * Covariates: _dose_, _time_, _nbirth_
 * 3 dose levels (High, Medium, Low)
 
-# Outcome categorization
-
-* Literature review (healthy cow PCV 24-46)
-* Practical Modeling
-
-```{r outcome_categorization, results='asis'}
-table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
-rownames(table_pcv_time)[3] <- "Missing value"
-taula <- xtable(table_pcv_time, digits=0)
-print(taula, table.placement = "H")
-````
-
 # Assumptions
 
 ```{r}
@@ -130,6 +118,18 @@ gDef <- gCows + cowT11 + cowT12 + cowT13 +
 gDef + scale_color_discrete(guide = 'none') + theme(text = element_text(size = 25))
 ```
 
+# Outcome categorization
+
+* Literature review (healthy cow PCV 24-46)
+* Practical Modeling
+
+```{r outcome_categorization, results='asis'}
+table_pcv_time <- table(cows$pcv.f , cows$time.f, useNA = "ifany")
+rownames(table_pcv_time)[3] <- "Missing value"
+taula <- xtable(table_pcv_time, digits=0)
+print(taula, table.placement = "H")
+````
+
 
 # Statistical methods
 
@@ -139,23 +139,58 @@ gDef + scale_color_discrete(guide = 'none') + theme(text = element_text(size = 2
 
 # Generalized Estimating Equations
 
+```{r, results='asis'}
+library("geepack")
+cows.com <- cows.com %>% arrange(idDose) # Package demands to be ordered
+model01ar1 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
+                 family = binomial, corstr = "ar1", scale.fix = TRUE)
+
+xx <- summary(model01ar1)$coef[,-3]
+colnames(xx)[3] <- "p-value"
+
+xtaula <- xtable(xx, label="modelgee")
+print(xtaula, comment=FALSE)
+```
+
+# Classification table
+
+
+```{r classification_GEE, results='asis'}
+pred.bin <- function(model){
+  
+  pred <- predict(model)
+  p <- exp(pred)/(1 + exp(pred))
+  round(p)
+  
+}
+
+# library("caret")
+# sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+# specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
+
+xx <- table(pred.bin(model01ar1), cows.com$pcv.b)
+rownames(xx) <- c("Predicted", "")
+colnames(xx) <- c("Original", "data")
+xtaula <- xtable(xx)
+print(xtaula)
+```
 
 # Generalized Linear Mixed Model
 
+\small
 \begin{table}[H]
 \centering
 \begin{tabular}{rrrrr}
   \hline
- & df & AIC & p-value \\ 
+ & AIC & p-value \\ 
   \hline
-$\beta_{0} + + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh$ & 6 & 36.592  &  \\ 
- $\beta_{0} +  + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 nbirth$ & 7 & 38.335 & 0.6123 \\ 
- $\beta_{0} +  (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 dose*time$ & 8 & 38.998 & 0.4506 \\  
+$\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH$ & 36.592  &  \\ 
+ $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 nbirth$ & 38.335 & 0.6123 \\ 
+ $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 dose*time$ & 38.998 & 0.4506 \\  
    \hline
 \end{tabular}
-\caption{Anova table comparing the different models with the one with fixed effects for time and dose.} 
-\label{anovas:Random_slope}
 \end{table}
+\normalsize
 
 # Generalized Linear Mixed Model
 
