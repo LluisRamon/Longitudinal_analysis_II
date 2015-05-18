@@ -142,6 +142,28 @@ gDef + scale_color_discrete(guide = 'none') + theme(text = element_text(size = 2
 
 # Generalized Linear Mixed Model
 
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & df & AIC & p-value \\ 
+  \hline
+$\beta_{0} + + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh$ & 6 & 36.592  &  \\ 
+ $\beta_{0} +  + (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 nbirth$ & 7 & 38.335 & 0.6123 \\ 
+ $\beta_{0} +  (\beta_{1} + b_{1i})time + \beta_2 doseMedium + \beta_3 doseHigh + \beta_4 dose*time$ & 8 & 38.998 & 0.4506 \\  
+   \hline
+\end{tabular}
+\caption{Anova table comparing the different models with the one with fixed effects for time and dose.} 
+\label{anovas:Random_slope}
+\end{table}
+
+# Generalized Linear Mixed Model
+
+Limitations of the results.
+
+* Small number of observations,
+* complete separation.
+
 # Missing Data Analysis
 
 
@@ -162,6 +184,6 @@ gDef + scale_color_discrete(guide = 'none') + theme(text = element_text(size = 2
 
 --------
 
-![](images/cowFuny.jpg)
+
 
 > Thank you for your attention! 
