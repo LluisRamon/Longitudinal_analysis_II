@@ -348,8 +348,8 @@ $$logit(p) = \beta_{0}  + \beta_1PCV_{healthy} + \beta_2 doseMedium + \beta_3 do
 
 ```{r, warning=FALSE, results='asis'}
 a <- seq(-2,2,by=0.1)
-sums <- sapply(a, function(k) summary(m <- glm(is.na(pcv)~time*dose, offset=k*pcv, data=cows))$coef[-1,-3], simplify=F)
-sums[[21]] <- summary(m <- glm(is.na(pcv)~time*dose, data=cows))$coef[-1,-3]
+sums <- sapply(a, function(k) summary(m <- glm(is.na(pcv)~time + dose, offset=k*pcv, data=cows))$coef[-1,-3], simplify=F)
+sums[[21]] <- summary(m <- glm(is.na(pcv)~time + dose, data=cows))$coef[-1,-3]
 taula <- sapply(1:length(sums), function(x) {
   paste(round(sums[[x]][-1,1],3), " (", round(sums[[x]][-1,2],3), ")", sep="")
 })
