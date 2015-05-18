@@ -194,9 +194,9 @@ print(xtaula, comment=FALSE)
 ```
 
 
-Table \ref{tab:classifcation_GEE} shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
+Table \ref{tab:classification_GEE} shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
 
-```{r classifcation_GEE, results='asis'}
+```{r classification_GEE, results='asis'}
 pred.bin <- function(model){
   
   pred <- predict(model)
@@ -212,7 +212,7 @@ pred.bin <- function(model){
 xx <- table(pred.bin(model01ar1), cows.com$pcv.b)
 rownames(xx) <- c("Predicted", "")
 colnames(xx) <- c("Original", "data")
-xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model and the original data.", label="tab:classifcation_GEE")
+xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model and the original data.", label="tab:classification_GEE")
 print(xtaula)
 ```
 
@@ -278,9 +278,9 @@ The more the cow receives the treatment (e.g. as time increases) the more likely
 
 ### Perfect separation
 
-Perfect separation occurrs in logistic regression when a covariate or a combination of them almost completely separates the value of the outcome variable. In this case the likelihood does not have a maximum for the corresponding variable and so the estimates became very large. It frequently ocurrs with small sample. A way to detect it is when the model has very big coefficients and standard errors. It is fully described in (Heinze 2002) \ref{art:Heinze 2002}. 
+Perfect separation occurs in logistic regression when a covariate or a combination of them almost completely separates the value of the outcome variable. In this case the likelihood does not have a maximum for the corresponding variable and so the estimates became very large. It frequently occurs with small sample. A way to detect it is when the model has very big coefficients and standard errors. It is fully described in (Heinze 2002) \ref{art:Heinze 2002}. 
 
-Our model has the previous conditions, so we consider that this model it is not appropiate and it is suggested to switch for a model that takes into account this issue. Several alternative models are described in section Further research \ref{sec:Further_research}.
+Our model has the previous conditions, so we consider that this model it is not appropriate and it is suggested to switch for a model that takes into account this issue. Several alternative models are described in section Further research \ref{sec:Further_research}.
 
 \vspace{1.5cm}
 
@@ -295,9 +295,9 @@ in order to assess its influence in the analyses performed in previous sections.
 Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data 
 distribution over time and for each dose. Clearly, the fact that an observation
 is missing is associated with the dose and the time (fisher tests p-values= 0.005
-and 0.007, respectively). Actually, there are more missings in low and medium dose
-than in high dose, and also, there are more missings as time increases. 
-Missings in the PCV are not produced completely at random, then.
+and 0.007, respectively). Actually, there are more missing data in low and medium dose
+than in high dose, and also as time increases. 
+Missing values in the PCV are not produced completely at random.
 
 ```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
 
@@ -317,7 +317,7 @@ print(tau, comment=F, include.rownames=F)
 
 For all this, it is pretty clear that there is some systematic mechanism that 
 produces the missing data. Probably, given that 8 of the 9 cows that have some 
-missings have the first missing after being unhealthy, it would be logic to 
+missing data have the first missing after being unhealthy, it would be logic to 
 understand that the missings are produced because of the death or that the cow 
 is dropped out from the study due to having too many health issues. The fact that
 assuming a sequence of doses for every cow, once there's a missing, no more values are reported anymore. For instance, looking at Figure ???, the cow with ID 5, would 
@@ -329,7 +329,7 @@ Therefore, the pattern for missings in this data is MAR or MNAR,
 depending on the mechanism that is producing the missings. 
 
 Since all the analyses performed previously were done with the complete cases 
-(missing PCV's were omited), the results obtained could be far from the reality 
+(missing PCV's were omitted), the results obtained could be far from the reality 
 (or not). The complete cases analysis can only deal with MCAR type of missing data.
 Therefore, several approaches will be used to analyse the data taking this into account.
 
@@ -376,16 +376,16 @@ axis(3, at=5, line=0.75, "DOSE", tick=F)
 # Limitations and Further research
 \label{sec:Further_research}
 
-* Jacknife estimators for small sample better than sandwhich estimator
+* Jacknife estimators for small sample better than sandwich estimator
 
 > Jackknife variance estimators are preferable to the sandwich estimator in case of a small number of clusters. (Højsgaard, Halekoh, Yan 2006)
 
-* Compre a new factor L and M dose against H dose
+* Compare a new factor L and M dose against H dose
 * Perfect Separation Problem with gee
 
 > It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
 
-* Compare GEE model with GLMM. Coeficients and SE.
+* Compare GEE model with GLMM. Coefficients and SE.
 
 \vspace{1.5cm}
 
