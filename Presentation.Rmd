@@ -175,7 +175,7 @@ Limitations of the results.
 
 # Limitations
 
-* Information could be added to the datset.
+* Information could be added to the data set.
 * No control group.
 * Small sample. Bias by selection?
 * Missing values could be further analysed.
