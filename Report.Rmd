@@ -143,7 +143,7 @@ Knowing the general behavior of the data is a starting point to every other anal
 qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose,  colour = factor(id)) + scale_color_discrete(guide = 'none')
 ```
 
-It clearly appears that cows which are treated with the low dose are unhealthy at time 1 and 2 (excep fot cow 7). The second major observation is that at time 3 cows that are treated with the high dose are healthy. This is still true for almost every cows at time 2. 
+It clearly appears that cows which are treated with the low dose are unhealthy at time 1 and 2 (except for cow 7). The second major observation is that at time 3 cows that are treated with the high dose are healthy. This is still true for almost every cows at time 2. 
 
 The effect of the treatment can be seen when a given cow goes from unhealthy to healthy. Such an evolution appears 18 times. That is to say that among the 30 "different" cows (identified by the variable *idDose*) 60% have a positive reaction to the treatment. The healing of the cows is done after the first injection of Berenil in 47% of the cases.
 
