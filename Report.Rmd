@@ -276,9 +276,13 @@ print(xtable(tab, caption = "Odds ratio with their confidence interval. \\label{
 
 It appears that an increase of one unit in time increases the odds ratio by 5.59e+13 which means that it is 5.59e+13 times more likely to be healthy than unhealthy when the time increases. The random effects on the time add variability to the effect of time depending on the id and on the dose. it means that cows have a different response to the treatment as regard to the time. The use of the high dose has an equivalent high impact on the probability to be healthy.
 
-Extremely high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage. This is a complete separation problem. It means that values of a variable completely predict the value of the outcome variable. For such an issue the likelihood does not have a maximum for the corresponding variable and so the estimates are very large. 
+The more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time but the overall is still positive.
 
-The more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time but the overall is still positive. 
+### Perfect separation
+
+Perfect separation occurrs in logistic regression when a covariate or a combination of them almost completely separates the value of the outcome variable. In this case the likelihood does not have a maximum for the corresponding variable and so the estimates became very large. It frequently ocurrs with small sample. A way to detect it is when the model has very big coefficients and standard errors. It is fully described in (Heinze 2002) \ref{art:Heinze 2002}. 
+
+Our model has the previous conditions, so we consider that this model it is not appropiate and it is suggested to switch for a model that takes into account this issue. Several alternative models are described in section Further research \ref{sec:Further_research}.
 
 \vspace{1.5cm}
 
@@ -396,7 +400,7 @@ TODO(Gerard): Normalize citations
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
   http://CRAN.R-project.org/package=MuMIn
-* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed 
+* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed/12210625 \label{art:Heinze 2002}
 * complete separation/ http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
