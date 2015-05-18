@@ -159,15 +159,18 @@ Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was
 
 Table X shows the coefficients estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for the *dose* covariate. Even if medium dose was not significant in the model, we kept it in the model because High dose was significant. The merging of the medium dose and the low dose into one covariate to be compared to the high dose is something that could be done in the section   \ref{sec:Further_research} Further research.
 
-TODO(Gerard): Create table with coefficients and alpha
-
-```{r geeglm}
+```{r geeglm, results='asis'}
 library("geepack")
 cows.com <- cows.com %>% arrange(idDose) # Package demands to be ordered
 model01ar1 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
                  family = binomial, corstr = "ar1", scale.fix = TRUE)
 
-summary(model01ar1)
+xx <- summary(model01ar1)$coef[,-3]
+colnames(xx)[3] <- "p-value"
+
+xtaula <- xtable(xx, label="modelgee", caption="Coefficients, SD and p-values from the GEE model. Alpha estimation (SD) = 0.171 (0.0413).")
+print(xtaula, comment=FALSE)
+
 # geeglm(formula = pcv.b ~ dose + time, family = binomial, data = cows.com, 
 #     id = idDose, corstr = "ar1", scale.fix = TRUE)
 # 
@@ -193,9 +196,7 @@ summary(model01ar1)
 
 Table X shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
 
-TODO(Gerard): Create table with classification
-
-```{r classifcation_GEE}
+```{r classifcation_GEE, results='asis'}
 pred.bin <- function(model){
   
   pred <- predict(model)
@@ -208,12 +209,13 @@ pred.bin <- function(model){
 # sensitivity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
 # specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
 
-table(pred.bin(model01ar1), cows.com$pcv.b)
+xx <- table(pred.bin(model01ar1), cows.com$pcv.b)
+rownames(xx) <- c("Predicted", "")
+colnames(xx) <- c("Original", "data")
+xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model and the original data.", label="pred-vs-original")
+print(xtaula, comment=FALSE)
 
-#           Original data
-#               0  1
-# Prediccted 0 41  5
-# Prediccted 1  4 26
+
 ```
 
 
@@ -282,7 +284,6 @@ The more the cow receives the treatment (e.g. as time increases) the more likely
 
 # Missing Data Analysis
 
-TODO(Gerard): Missing exploration, in processs
 
 \label{sec:Missing_data_analysis}
 
@@ -350,9 +351,9 @@ for(i in 1:10){
   vaca <- cows[cows$id==i,]
   tb <- table(vaca$dose,is.na(vaca$pcv))[,1]
   tbord <- tb[order(tb, decreasing = T)]
-  vaca <- vaca[c(which(vaca$dose==names(tbord)[1]),
-                 which(vaca$dose==names(tbord)[2]),
-                 which(vaca$dose==names(tbord)[3])),]
+  vaca <- vaca[c(which(vaca$dose=="L"),
+                 which(vaca$dose=="M"),
+                 which(vaca$dose=="H")),]
   cows[cows$id==i,] <- vaca
 }
 
@@ -360,10 +361,12 @@ b <- sapply(unique(cows$id), FUN=function(x){
       !is.na(cows[cows$id==x, "pcv"])
 })
 colors <- matrix(ifelse(cows$dose=="H", 3, ifelse(cows$dose=="L", 1, 2)), ncol=10)
-image(x=1:10, y=1:9, t(colors*b), yaxt="n", ylab="Times", xlab="ID", col=c("white", heat.colors(3)[3:1]))
+image(y=1:10, x=1:9, (colors*b), xaxt="n", ylab="ID", xlab="Time", col=c("white", heat.colors(3)[3:1]))
 abline(v=1:10-0.5)
 abline(h=1:10-0.5)
-axis(2, at=1:9, rep(1:3, 3))
+axis(1, at=1:9, rep(1:3, 3))
+axis(3, at=c(2,5,8), c("Low", "Medium", "High"), tick=F, line=-0.5)
+axis(3, at=5, line=0.75, "DOSE", tick=F)
 ```
 
 \vspace{1.5cm}
