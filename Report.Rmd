@@ -375,6 +375,12 @@ axis(3, at=5, line=0.75, "DOSE", tick=F)
 
 \vspace{1.5cm}
 
+# Conclusion
+
+The main objective of this study was to assess the efficiency of the different kinds of doses used to cure cows infected with the trypanosomosis parasite. As expected, time and dose have a positive effect on the cow's health. However the effect of the dose varies with the kind of doses used. No differences were found when comparing medium dose with low dose, using different models. However, high dose was found to be significantly better than the low dose.
+
+When dealing with missings...
+
 # Limitations and Further research
 \label{sec:Further_research}
 
