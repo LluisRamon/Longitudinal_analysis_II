@@ -316,12 +316,11 @@ For all this, it is pretty clear that there is some systematic mechanism that
 produces the missing data. Probably, given that 8 of the 9 cows that have some 
 missings have the first missing after being unhealthy, it would be logic to 
 understand that the missings are produced because of the death or that the cow 
-is dropped out from the study due to having too many health issues. This makes
-sense also when looking at Figure ????: the cow with ID 5, for example, would 
+is dropped out from the study due to having too many health issues. The fact that
+assuming a sequence of doses for every cow, once there's a missing, no more values are reported anymore. For instance, looking at Figure ???, the cow with ID 5, would 
 have died (or left the study) before taking the time 3 low dose measure, and if 
 one assumes that its sequence of doses was H-L-M (the sequence is not provided),
-this explains the missings for the medium dose, having, under this assumption, 
-a monotone pattern of missing data. In this sense, our sample could be easily 
+this explains the missings for the medium dose. Figure \ref{missings-plot} shows the missing data in white, and the other measures taken for each dose and cow, assuming a particular sequence for each of them. So under these assumptions, the missing data are monotone pattern of missing data. In this sense, our sample could be easily 
 biased, because the missings are not equally distributed among the data.
 Therefore, the pattern for missings in this data is MAR or MNAR,
 depending on the mechanism that is producing the missings. 
@@ -330,8 +329,6 @@ Since all the analyses performed previously were done with the complete cases
 (missing PCV's were omited), the results obtained could be far from the reality 
 (or not). The complete cases analysis can only deal with MCAR type of missing data.
 Therefore, several approaches will be used to analyse the data taking this into account.
-
-
 
 The following table shows the coefficients of the logistic regression performed with the covariates time, dose and PCV to predict the missings. All the coefficients have a lot of variation depending on the values of the coefficient of the PCV. The missings then, depend a lot on the covariates and also on the values of PCV.
 
@@ -346,6 +343,27 @@ a[20] <- 0.1
 rownames(taula) <- rownames(sums[[21]])[-1]
 xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Regression coefficients and SD given the coefficient for the PCV.", label="sensib")
 print(xtaula, comment=F, include.rownames=F)
+```
+
+```{r, fig.cap="Missings distribution with reordered doses for each cow (columns). Missing data is plotted in white, low, medium and high doses are plotted in yellow, orange and red, respectively. \\label{missings-plot}", fig.width=4, fig.height=4}
+for(i in 1:10){
+  vaca <- cows[cows$id==i,]
+  tb <- table(vaca$dose,is.na(vaca$pcv))[,1]
+  tbord <- tb[order(tb, decreasing = T)]
+  vaca <- vaca[c(which(vaca$dose==names(tbord)[1]),
+                 which(vaca$dose==names(tbord)[2]),
+                 which(vaca$dose==names(tbord)[3])),]
+  cows[cows$id==i,] <- vaca
+}
+
+b <- sapply(unique(cows$id), FUN=function(x){
+      !is.na(cows[cows$id==x, "pcv"])
+})
+colors <- matrix(ifelse(cows$dose=="H", 3, ifelse(cows$dose=="L", 1, 2)), ncol=10)
+image(x=1:10, y=1:9, t(colors*b), yaxt="n", ylab="Times", xlab="ID", col=c("white", heat.colors(3)[3:1]))
+abline(v=1:10-0.5)
+abline(h=1:10-0.5)
+axis(2, at=1:9, rep(1:3, 3))
 ```
 
 \vspace{1.5cm}
