@@ -157,7 +157,7 @@ $$logit(p) = \beta_{0} + \beta_{1}time + \beta_2 doseMedium + \beta_3 doseHigh$$
 
 Several working correlation matrices were used and an AR1$(\alpha =  0.171)$ was chosen because of its smaller QIC.
 
-Table X shows the coefficients estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for the *dose* covariate. Even if medium dose was not significant in the model, we kept it in the model because High dose was significant. The merging of the medium dose and the low dose into one covariate to be compared to the high dose is something that could be done in the section   \ref{sec:Further_research} Further research.
+Table \ref{tab:gee} shows the coefficients estimate for the final model. The odds ratio of having a high dosage is $exp(3.382)$ times of having low dosage adjusted for time covariate. An increase of one unit in time increases the odds ratio by $exp(3.205)$ times adjusted for the *dose* covariate. Even if medium dose was not significant in the model, we kept it in the model because High dose was significant. The merging of the medium dose and the low dose into one covariate to be compared to the high dose is something that could be done in the section   \ref{sec:Further_research} Further research.
 
 ```{r geeglm, results='asis'}
 library("geepack")
@@ -168,7 +168,7 @@ model01ar1 <- geeglm(pcv.b ~ dose + time, id = idDose, data = cows.com,
 xx <- summary(model01ar1)$coef[,-3]
 colnames(xx)[3] <- "p-value"
 
-xtaula <- xtable(xx, label="modelgee", caption="Coefficients, SD and p-values from the GEE model. Alpha estimation (SD) = 0.171 (0.0413).")
+xtaula <- xtable(xx, label="modelgee", caption="Coefficients, SD and p-values from the GEE model. Alpha estimation (SD) = 0.171 (0.0413). \\label{tab:gee}")
 print(xtaula, comment=FALSE)
 
 # geeglm(formula = pcv.b ~ dose + time, family = binomial, data = cows.com, 
@@ -194,7 +194,7 @@ print(xtaula, comment=FALSE)
 ```
 
 
-Table X shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
+Table \ref{tab:classifcation_GEE} shows the classification table for the chosen model. The selected model has a sensitivity of 0.911 and a specificity of 0.839.
 
 ```{r classifcation_GEE, results='asis'}
 pred.bin <- function(model){
@@ -212,10 +212,8 @@ pred.bin <- function(model){
 xx <- table(pred.bin(model01ar1), cows.com$pcv.b)
 rownames(xx) <- c("Predicted", "")
 colnames(xx) <- c("Original", "data")
-xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model and the original data.", label="pred-vs-original")
-print(xtaula, comment=FALSE)
-
-
+xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model and the original data.", label="tab:classifcation_GEE")
+print(xtaula)
 ```
 
 
