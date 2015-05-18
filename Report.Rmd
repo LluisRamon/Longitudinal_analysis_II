@@ -278,7 +278,7 @@ The more the cow receives the treatment (e.g. as time increases) the more likely
 
 ### Perfect separation
 
-Perfect separation occurs in logistic regression when a covariate or a combination of them almost completely separates the value of the outcome variable. In this case the likelihood does not have a maximum for the corresponding variable and so the estimates became very large. It frequently occurs with small sample. A way to detect it is when the model has very big coefficients and standard errors. It is fully described in (Heinze 2002) \ref{art:Heinze 2002}. 
+Perfect separation occurs in logistic regression when a covariate or a combination of them almost completely separates the value of the outcome variable. In this case the likelihood does not have a maximum for the corresponding variable and so the estimates became very large. It frequently occurs with small sample. A way to detect it is when the model has very big coefficients and standard errors. It is fully described in (Heinze 2002) \ref{sec:Bibliography}. 
 
 Our model has the previous conditions, so we consider that this model it is not appropriate and it is suggested to switch for a model that takes into account this issue. Several alternative models are described in section Further research \ref{sec:Further_research}.
 
@@ -376,31 +376,35 @@ axis(3, at=5, line=0.75, "DOSE", tick=F)
 # Limitations and Further research
 \label{sec:Further_research}
 
-* Jacknife estimators for small sample better than sandwich estimator
+The relative low number of observations in the dataset makes difficult to generalize the results of the study. A lot of assumptions and issues arised when we analyzed the data. In order to verify whether or not those assumptions can be validated we would have needed more information on the dataset.
 
-> Jackknife variance estimators are preferable to the sandwich estimator in case of a small number of clusters. (Højsgaard, Halekoh, Yan 2006)
+In order to further analyse the data some improvements are possible. 
 
-* Compare a new factor L and M dose against H dose
-* Perfect Separation Problem with gee
+In GEE modeling for small sample, Jacknife estimators are better than sandwhich estimator as in (Højsgaard, 2006) \ref{sec:Bibliography}
 
-> It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
+A new factor High dose against a combined Low and Medium dose could be done.
 
-* Compare GEE model with GLMM. Coefficients and SE.
+In this study we dealt at several ocasions with the Perfect Separation Problem. It apeared when a 22 PCV value threshold was used for healthy or unhealthy cow. The GEE models with time and dose interaction with this model resulted to be perfectly separated. Then we changed to 20 to avoid this problem. Unfortunately it latter appeared with the GLMM modeling. Several options such as Bayesian Modeling with a flat prior seems to be an option to try in the future. It is implemented at (Kosmidis, 2013) or at (Hadfield, 2010).
 
 \vspace{1.5cm}
 
 # Bibliography
 
+\label{sec:Bibliography}
+
 TODO(Gerard): Normalize citations
 
 * [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
-* [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11][]
+* [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11][] 
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
   http://CRAN.R-project.org/package=MuMIn
-* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed/12210625 \label{art:Heinze 2002}
+* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed/12210625 
 * complete separation/ http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
-
+* Ioannis Kosmidis (2013). brglm: Bias reduction in binomial-response Generalized
+  Linear Models. http://www.ucl.ac.uk/~ucakiko/software.html
+* Jarrod D Hadfield (2010). MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package. Journal of Statistical Software, 33(2), 1-22. URL http://www.jstatsoft.org/v33/i02/.
+  
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
 [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper
 [Hardin & Hilbe 2002, Generalized Estimating Equations]: http://books.google.es/books/about/Generalized_Estimating_Equations.html?id=wxl7ajq8ymYC&redir_esc=y
