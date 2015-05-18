@@ -127,6 +127,8 @@ A similar process that the one used in the GEE to select the covariates will be 
 
 ## Transition Models
 
+\label{sec:Transion}
+
 TODO(Lluis): Add model information.
 TODO(All): Include pros/cons with our data. Decide if our data could be modeled using this kinds of models.
 
@@ -376,15 +378,17 @@ axis(3, at=5, line=0.75, "DOSE", tick=F)
 # Limitations and Further research
 \label{sec:Further_research}
 
-The relative low number of observations in the dataset makes difficult to generalize the results of the study. A lot of assumptions and issues arised when we analyzed the data. In order to verify whether or not those assumptions can be validated we would have needed more information on the dataset.
+The relative low number of observations in the dataset makes difficult to generalize the results of the study. A lot of assumptions were needed. Besides issues arised when we analyzed the data. In order to verify whether or not those assumptions can be validated we would have needed more information on the dataset. 
 
-In order to further analyse the data some improvements are possible. 
+In order to further analyse the data some improvements or ideas are possible. Some of them are listed below.
 
-In GEE modeling for small sample, Jacknife estimators are better than sandwhich estimator as in (Højsgaard, 2006) \ref{sec:Bibliography}
+In GEE modeling for small sample, Jacknife estimators are better than sandwhich estimator as explaned in (Højsgaard, 2006).
 
-A new factor High dose against a combined Low and Medium dose could be done.
+As Medium dose seems to be not signifcant for our models, a joint Low and Medium dose factor can be created and compared against High dose.
 
 In this study we dealt at several ocasions with the Perfect Separation Problem. It apeared when a 22 PCV value threshold was used for healthy or unhealthy cow. The GEE models with time and dose interaction with this model resulted to be perfectly separated. Then we changed to 20 to avoid this problem. Unfortunately it latter appeared with the GLMM modeling. Several options such as Bayesian Modeling with a flat prior seems to be an option to try in the future. It is implemented at (Kosmidis, 2013) or at (Hadfield, 2010).
+
+Transition models are explained in section \ref{sec:Transion} and a better exploration could be interesting.
 
 \vspace{1.5cm}
 
