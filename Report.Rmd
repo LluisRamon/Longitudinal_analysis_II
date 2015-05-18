@@ -139,8 +139,8 @@ TODO(All): Include pros/cons with our data. Decide if our data could be modeled 
 Knowing the general behavior of the data is a starting point to every other analysis. Figure \ref{fig:data} shows the value of the binary outcome for all the cows in the dataset.
 
 ```{r figdata, fig.cap="Representation of the data. \\label{fig:data}",, fig.pos = "H", fig.height = 4, fig.width = 6}
-qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose, 
-      colour = factor(id)) + scale_color_discrete(guide = 'none')
+ 
+qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose,  colour = factor(id)) + scale_color_discrete(guide = 'none')
 ```
 
 It clearly appears that cows which are treated with the low dose are unhealthy at time 1 and 2 (excep fot cow 7). The second major observation is that at time 3 cows that are treated with the high dose are healthy. This is still true for almost every cows at time 2. 
@@ -274,23 +274,29 @@ print(xtable(tab, caption = "Odds ratio with their confidence interval. \\label{
 
 It appears that an increase of one unit in time increases the odds ratio by 5.59e+13 which means that it is 5.59e+13 times more likely to be healthy than unhealthy when the time increases. The random effects on the time add variability to the effect of time depending on the id and on the dose. it means that cows have a different response to the treatment as regard to the time. The use of the high dose has an equivalent high impact on the probability to be healthy.
 
-Extremely high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage.
+Extremely high (or low) values were obtained because there are only twice as much observations than parameters to estimates. Besides in our dataset one can notice that the zeros are mainly at time 1 and for the low dosage and the one at time 3 for the high dosage. This is a complete separation problem. It means that values of a variable completely predict the value of the outcome variable. For such an issue the likelihood does not have a maximum for the corresponding variable and so the estimates are very large. 
 
-To conclude one could say that the more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time.
+The more the cow receives the treatment (e.g. as time increases) the more likely it is that it will be healthy. The same relation goes for the choice of the high dosage as compared to the low dosage. Cows react in different ways to the treatment as shown by the random effects on time but the overall is still positive. 
 
 \vspace{1.5cm}
 
 # Missing Data Analysis
 
-TODO(Gerard): Missing exploration, in process
+TODO(Gerard): Missing exploration, in processs
 
 \label{sec:Missing_data_analysis}
 
-In this section, the patterns of missing data will be discussed and analyzed, in order to assess its influence in the analyses performed in previous sections.
+In this section, the patterns of missing data will be discussed and analyzed, 
+in order to assess its influence in the analyses performed in previous sections.
 
-Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data distribution over time and for each dose. Clearly, the fact that an observation is missing is associated with the dose and the time (fisher tests p-values= 0.005 and 0.007, respectively). Actually, there are more missing values in low and medium dose than in high dose, and also as time increases.
+Figure \ref{fig:nabars} and Table \ref{taula:nas} show the missing data 
+distribution over time and for each dose. Clearly, the fact that an observation
+is missing is associated with the dose and the time (fisher tests p-values= 0.005
+and 0.007, respectively). Actually, there are more missings in low and medium dose
+than in high dose, and also, there are more missings as time increases. 
+Missings in the PCV are not produced completely at random, then.
 
-```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missing values for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
+```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
 
 par(cex=0.8)
 a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
@@ -301,32 +307,62 @@ axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
 
 ```{r taula:nas, results='asis'}
 tau <- xtable(aggregate(list(Missing=is.na(cows$pcv.f), Available=!is.na(cows$pcv.f)), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3:4)],
-              caption="Number of missing data and available data in the outcome.",
+              caption="Number of missings and available data in the outcome.",
               label="taula:nas")
 print(tau, comment=F, include.rownames=F)
 ```
 
-For all this, one could think that missing data are produced because of the death or drop out of the cow for any reason. This makes sense also when looking at Figure ????: the cow with ID 5, for example, would have died (or left the study) before taking the time 3 low dose measure, and if one assumes that its sequence of doses was H-L-M, this explains the missing values for the medium dose. Following this rationale, cows number 1, 2 and 4 would have died at the time 3 of dose L (their sequence would end with L, since there are no more missing data); cows number 3, 8 and 10 before time 3 of the medium dose (ending with M dose) and cows with ID 6 and 9 before time 2 of the L dose.
+For all this, it is pretty clear that there is some systematic mechanism that 
+produces the missing data. Probably, given that 8 of the 9 cows that have some 
+missings have the first missing after being unhealthy, it would be logic to 
+understand that the missings are produced because of the death or that the cow 
+is dropped out from the study due to having too many health issues. This makes
+sense also when looking at Figure ????: the cow with ID 5, for example, would 
+have died (or left the study) before taking the time 3 low dose measure, and if 
+one assumes that its sequence of doses was H-L-M (the sequence is not provided),
+this explains the missings for the medium dose, having, under this assumption, 
+a monotone pattern of missing data. In this sense, our sample could be easily 
+biased, because the missings are not equally distributed among the data.
+Therefore, the pattern for missings in this data is MAR or MNAR,
+depending on the mechanism that is producing the missings. 
 
-The point in all this is that, if we think that the doses have different effects in the cows, then, the sequence of doses will affect the number of missing values for a cow, introducing a huge source of bias in the data. Given that 8 of the 9 cows that have some missing data have the first missing after being unhealthy, it would be logic to understand that the missing values are produced because of the death or that the cow is dropped out from the study due to having too many health issues. With this assumption, the cows with worse prognostic would not have been analysed in the previous sections. Also, the missing data could be understood like if the cow was not healthy, making the 
+Since all the analyses performed previously were done with the complete cases 
+(missing PCV's were omited), the results obtained could be far from the reality 
+(or not). The complete cases analysis can only deal with MCAR type of missing data.
+Therefore, several approaches will be used to analyse the data taking this into account.
 
-Therefore, the pattern for missing values in this data (maybe more than one) is, probably, missing not at random (MNAR).
+
+
+The following table shows the coefficients of the logistic regression performed with the covariates time, dose and PCV to predict the missings. All the coefficients have a lot of variation depending on the values of the coefficient of the PCV. The missings then, depend a lot on the covariates and also on the values of PCV.
+
+```{r, warning=FALSE, results='asis'}
+a <- seq(-2,2,by=0.1)
+sums <- sapply(a, function(k) summary(m <- glm(is.na(pcv)~time*dose, offset=k*pcv, data=cows))$coef[-1,-3], simplify=F)
+sums[[21]] <- summary(m <- glm(is.na(pcv)~time*dose, data=cows))$coef[-1,-3]
+taula <- sapply(1:length(sums), function(x) {
+  paste(round(sums[[x]][-1,1],3), " (", round(sums[[x]][-1,2],3), ")", sep="")
+})
+a[20] <- 0.1
+rownames(taula) <- rownames(sums[[21]])[-1]
+xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Regression coefficients and SD given the coefficient for the PCV.", label="sensib")
+print(xtaula, comment=F, include.rownames=F)
+```
 
 \vspace{1.5cm}
 
 # Limitations and Further research
 \label{sec:Further_research}
 
-* Jacknife estimators for small sample better than sandwich estimator
+* Jacknife estimators for small sample better than sandwhich estimator
 
 > Jackknife variance estimators are preferable to the sandwich estimator in case of a small number of clusters. (Højsgaard, Halekoh, Yan 2006)
 
-* Compare a new factor L and M dose against H dose
+* Compre a new factor L and M dose against H dose
 * Perfect Separation Problem with gee
 
 > It apeared when using a 22 PCV value threshold for healthy or unhealthy cow.
 
-* Compare GEE model with GLMM. Coefficients and SE.
+* Compare GEE model with GLMM. Coeficients and SE.
 
 \vspace{1.5cm}
 
@@ -339,6 +375,8 @@ TODO(Gerard): Normalize citations
 * [Hardin & Hilbe 2002, Generalized Estimating Equations][]
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
   http://CRAN.R-project.org/package=MuMIn
+* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed 
+* complete separation/ http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
 
 [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
 [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper
