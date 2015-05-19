@@ -58,7 +58,7 @@ Effects of the disease:
 
 # Assumptions
 
-```{r}
+```{r, fig.align='center'}
 library("ggplot2")
 library("scales")
 library("grid")
@@ -135,7 +135,7 @@ print(taula, table.placement = "H")
 
 * Generalized Estimating Equations (GEE) 
 * Generalized Linear Mixed Model (GLMM)
-* Missing Data Analysis
+* Missing Data Analysis: Fisher tests and Sensivity analyses.
 
 # Generalized Estimating Equations
 
@@ -210,12 +210,76 @@ Quasicomplete separation problem:
 
 # Missing Data Analysis
 
+```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
+cows$doseExt <- factor(cows$dose, labels = c("Low", "Medium", "High"))
+cows$missing <- is.na(cows$pcv.f)
+
+cows2 <- cows %>% group_by(doseExt, time) %>% dplyr::summarise(n = sum(missing))
+ggplot(cows2, aes(factor(time), n, fill = doseExt)) + 
+  geom_bar(position = "dodge", stat="identity") + facet_grid(.~ doseExt) + 
+  guides(fill = FALSE) + xlab("time") + ylab("Number of missings") 
+```
+
+# Missing Data Analysis
+
+
+```{r, fig.cap="Missings distribution with reordered doses for each cow (columns). Missing data is plotted in white, low, medium and high doses are plotted in magenta, green and blue, respectively. \\label{missings-plot}", fig.width=4, fig.height=4, fig.align='center'}
+cows$doseExt2 <- cows$doseExt
+cows$doseExt2[cows$missing] <- NA
+ggplot(cows, aes(x = factor(time),  y = factor(id), fill = doseExt2)) + facet_grid(.~ doseExt) + geom_tile(colour = "black") + guides(fill = FALSE) + xlab("time") + ylab("Cow ID") +
+  scale_fill_discrete(na.value = "white")
+```
+
+# Missing Data Analysis
+
+
+```{r, warning=FALSE, results='asis'}
+a <- -6:6
+a[7] <- 6
+sums <- sapply(a, function(k) {
+  m <- glm(is.na(pcv.f)~time+dose, offset=k*pcv.b, data=cows)
+  sm <- exp(summary(m)$coef[-(1:2), 1])
+  cbind(OR=as.matrix(sm), exp(confint(m)[-(1:2),]))
+}, simplify=F)
+a <- -6:6
+m <- glm(is.na(pcv.f)~time+dose, data=cows)
+sm <- exp(summary(m)$coef[-(1:2), 1])
+sums[[7]] <- cbind(OR=as.matrix(sm), exp(confint(m)[-(1:2),]))
+taula <- sapply(1:length(sums), function(x) {
+  paste(round(sums[[x]][,1],3), " (", round(sums[[x]][,2],3), "-", round(sums[[x]][,3],3), ")", sep="")
+})
+rownames(taula) <- rownames(sums[[7]])
+xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Odds ratio and 95 percent confidence interval, given the coefficient for the PCV.", label="catpcv")
+print(xtaula, comment=F, include.rownames=F, scalebox=0.7)
+```
+
+
+# Missing Data Analysis
+
+```{r, warning=FALSE, results='asis'}
+a <- seq(-2,2,by=0.2)
+sums <- sapply(a, function(k) summary(geeglm(is.na(pcv.b) ~ dose + time, offset=k*pcv.b, id = idDose, data = cows.com,
+                                             family = binomial, corstr="ar1" , scale.fix = TRUE)
+)$coef[-1,-3], simplify=F)
+sums[[11]] <- summary(geeglm(is.na(pcv.b) ~ dose + time, id = idDose, data = cows.com,
+                             family = binomial, corstr="ar1", scale.fix = TRUE))$coef[-1,-3]
+taula <- sapply(1:length(sums), function(x) {
+  paste(round(sums[[x]][-3,1],3), " (", round(sums[[x]][-3,2],3), ")", sep="")
+})
+rownames(taula) <- rownames(sums[[21]])[-1]
+xtaula <- xtable((cbind(Beta1=a, t(taula))), caption="Regression coefficients and SD given the coefficient for the PCV.", label="geemissings")
+print(xtaula, comment=F, include.rownames=F, scalebox=0.55)
+```
 
 # Conclusion
 
-* The high dose is much more efficient.
-* No difference between medium and low dose.
-
+- The high dose is much more efficient.
+- No difference between medium and low dose.
+- Monotonic missings. Probably due to death.
+- Missings are not MCAR.
+- If missings are due to death: 
+     - Probability of missings depend on the PCV value itself.
+     - The cows with worse evolution were not evaluated.
 
 # Limitations
 
