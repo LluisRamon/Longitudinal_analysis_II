@@ -177,8 +177,8 @@ print(xtaula)
 
 # Generalized Linear Mixed Model
 
-* The grouping factor: id/dose.
-* The random effect on time.
+* The grouping factor: two levels of random effects.
+* Random effect on time as a start.
 
 # Generalized Linear Mixed Model
 
