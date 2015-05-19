@@ -7,6 +7,7 @@ library("tidyr")
 library("corrplot")
 library("grid")
 library("gridExtra")
+library("lme4")
 
 # Import dataset ----------------------------------------------------------
 cows <- read.table("data/cattle_mes dades.txt", header = TRUE, 
@@ -128,11 +129,6 @@ specificity(as.factor(pred.bin(model01ar1)), as.factor(cows.com$pcv.b))
 
 # GLMM --------------------------------------------------------------------
 
-library("lme4")
-library("xtable")
-library("caret")
-library("sjPlot")
-
 # Random effect on the intercep and the slope.
 
 model.re.11 <- glmer(pcv.b~time+(time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
@@ -151,7 +147,7 @@ summary(model.re.12)
 # We will not use a random intercept.
 
 
-# Random effect only on the slope.
+# Random effect only on the slope. We start with time.
 
 model.res.11 <- glmer(pcv.b~dose+time+(0+time|id/dose),data=cows.com,family=binomial,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.11)
@@ -162,20 +158,22 @@ start12 <- unlist(getME(model.res.11,name="theta"))
 start13 <- unlist(getME(model.res.11,name="beta"))
 start1 <- list(c(start11,start12,start13)) 
 
-# We use the model with dose+time.
+# We use the model with dose+time as a start.
+
 model.res.21 <- glmer(pcv.b~dose+time+nbirth+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.21)
-# AIC = 38.3
 
 anova(model.res.11,model.res.21)
 # model with dose+time is better.
 
 model.res.31 <- glmer(pcv.b~dose*time+(0+time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
 summary(model.res.31)
-# AIC = 39
 
 anova(model.res.11,model.res.31)
 # We keep the model with dose+time.
+
+# No point of adding random effect since there are no other fixed effects and the sample size
+# is too small so we would have too many parameters to estimate.
 
 finalModel <- model.res.11
 summary(finalModel)
@@ -184,20 +182,6 @@ se <- sqrt(diag(vcov(finalModel)))
 
 tab <- exp(cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel), 
              sup = fixef(finalModel) + 1.96 *se))
-
-# Is it ok to have Odds Ratio either very large or very small (*10^16;*10^-37)?
-
-pred.bin <- function(model){
-  pred <- predict(model)
-  p <- exp(pred)/(1 + exp(pred))
-  round(p)
-}
-
-prediction <- pred.bin(finalModel)
-
-confusionMatrix(data=prediction,reference=cows.com$pcv.b)
-
-# Is it ok to have a sensitivity and a specificity of 1?
 
 
 # Missingnes --------------------------------------------------------------
