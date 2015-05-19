@@ -386,27 +386,11 @@ All the coefficients have a lot of variation depending on the values of the coef
 Also a sensitivity analysis was carried out using GEE, pointing to the same direction. The results can be seen in Table \ref{geemissings}
 
 
-```{r, fig.cap="Missings distribution with reordered doses for each cow (columns). Missing data is plotted in white, low, medium and high doses are plotted in yellow, orange and red, respectively. \\label{missings-plot}", fig.width=4, fig.height=4}
-for(i in 1:10){
-  vaca <- cows[cows$id==i,]
-  tb <- table(vaca$dose,is.na(vaca$pcv))[,1]
-  tbord <- tb[order(tb, decreasing = T)]
-  vaca <- vaca[c(which(vaca$dose=="L"),
-                 which(vaca$dose=="M"),
-                 which(vaca$dose=="H")),]
-  cows[cows$id==i,] <- vaca
-}
-
-b <- sapply(unique(cows$id), FUN=function(x){
-      !is.na(cows[cows$id==x, "pcv"])
-})
-colors <- matrix(ifelse(cows$dose=="H", 3, ifelse(cows$dose=="L", 1, 2)), ncol=10)
-image(y=1:10, x=1:9, (colors*b), xaxt="n", ylab="ID", xlab="Time", col=c("white", heat.colors(3)[3:1]))
-abline(v=1:10-0.5)
-abline(h=1:10-0.5)
-axis(1, at=1:9, rep(1:3, 3))
-axis(3, at=c(2,5,8), c("Low", "Medium", "High"), tick=F, line=-0.5)
-axis(3, at=5, line=0.75, "DOSE", tick=F)
+```{r, fig.cap="Missings distribution with reordered doses for each cow (columns). Missing data is plotted in white, low, medium and high doses are plotted in magenta, green and blue, respectively. \\label{missings-plot}", fig.width=4, fig.height=4}
+cows$doseExt2 <- cows$doseExt
+cows$doseExt2[cows$missing] <- NA
+ggplot(cows, aes(x = factor(time),  y = factor(id), fill = doseExt2)) + facet_grid(.~ doseExt) + geom_tile(colour = "black") + guides(fill = FALSE) + xlab("time") + ylab("Cow ID") +
+  scale_fill_discrete(na.value = "white")
 ```
 
 ```{r, warning=FALSE, results='asis'}
