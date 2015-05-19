@@ -183,59 +183,28 @@ se <- sqrt(diag(vcov(finalModel)))
 tab <- exp(cbind(inf = fixef(finalModel) - 1.96 * se, est = fixef(finalModel), 
              sup = fixef(finalModel) + 1.96 *se))
 
-
-# Missingnes --------------------------------------------------------------
-
-aggregate(is.na(cows$pcv.f), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3)]
-
-a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
-abline(h=0)
-axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
-axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
-## Percentatge de missings en cada dosi i temps respecte del total de dades de la mostra.
-
-fisher.test(table(is.na(cows$pcv.f),cows$dose))
-fisher.test(table(is.na(cows$pcv.f),cows$time))
-
-# oagg <- order((agg <- aggregate(is.na(cows$pcv.f), list(cows$time, cows$dose, cows$id), sum))[,"x"])
-# agg <- agg[oagg,]
-# agg <- agg[order(agg[[3]]),]
-
-
 # Missings ----------------------------------------------------------------
 
 fisher.test(is.na(cows$pcv), cows$dose)
 fisher.test(is.na(cows$pcv), cows$time)
 
-par(cex=0.8)
-a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
-abline(h=0)
-axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
-axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+cows$doseExt <- factor(cows$dose, labels = c("Low", "Medium", "High"))
+cows$missing <- is.na(cows$pcv.f)
+
+cows2 <- cows %>% group_by(doseExt, time) %>% dplyr::summarise(n = sum(missing))
+ggplot(cows2, aes(factor(time), n, fill = doseExt)) + 
+  geom_bar(position = "dodge", stat="identity") + facet_grid(.~ doseExt) + 
+  guides(fill = FALSE) + xlab("time") + ylab("Number of missings")
 
 aggregate(list(Missing=is.na(cows$pcv.f), Available=!is.na(cows$pcv.f)), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3:4)]
 
 
-for(i in 1:10){
-  vaca <- cows[cows$id==i,]
-  tb <- table(vaca$dose,is.na(vaca$pcv))[,1]
-  tbord <- tb[order(tb, decreasing = T)]
-  vaca <- vaca[c(which(vaca$dose=="L"),
-                 which(vaca$dose=="M"),
-                 which(vaca$dose=="H")),]
-  cows[cows$id==i,] <- vaca
-}
+cows$doseExt2 <- cows$doseExt
+cows$doseExt2[cows$missing] <- NA
 
-b <- sapply(unique(cows$id), FUN=function(x){
-  !is.na(cows[cows$id==x, "pcv"])
-})
-colors <- matrix(ifelse(cows$dose=="H", 3, ifelse(cows$dose=="L", 1, 2)), ncol=10)
-image(y=1:10, x=1:9, (colors*b), xaxt="n", ylab="ID", xlab="Time", col=c("white", heat.colors(3)[3:1]))
-abline(v=1:10-0.5)
-abline(h=1:10-0.5)
-axis(1, at=1:9, rep(1:3, 3))
-axis(3, at=c(2,5,8), c("Low", "Medium", "High"), tick=F, line=-0.5)
-axis(3, at=5, line=0.75, "DOSE", tick=F)
+ggplot(cows, aes(x = factor(time),  y = factor(id), fill = doseExt2)) + facet_grid(.~ doseExt) + 
+  geom_tile(colour = "black") + guides(fill = FALSE) + xlab("time") + ylab("Cow ID") +
+  scale_fill_discrete(na.value = "white")
 
 
 a <- -6:6
