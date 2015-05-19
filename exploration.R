@@ -145,7 +145,7 @@ start13 <- unlist(getME(model.re.11,name="beta"))
 start1 <- list(c(start11,start12,start13)) 
 
 model.re.12 <- glmer(pcv.b~time+dose+(time|id/dose),data=cows.com,family=binomial,start=start1,control=glmerControl(optimizer="bobyqa"))
-summary(model.re.11)
+summary(model.re.12)
 # The model failed to converge and corr of -1.
 
 # We will not use a random intercept.
