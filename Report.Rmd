@@ -219,6 +219,7 @@ xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model 
 print(xtaula)
 ```
 
+\newpage
 
 ## Random effects model
 
@@ -398,12 +399,9 @@ taula <- sapply(1:length(sums), function(x) {
   paste(round(sums[[x]][,1],3), " (", round(sums[[x]][,2],3), "-", round(sums[[x]][,3],3), ")", sep="")
 })
 rownames(taula) <- rownames(sums[[7]])
-xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Regression coefficients and SD given the coefficient for the PCV.", label="catpcv")
+xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Odds ratio and 95% confidence interval, given the coefficient for the PCV.", label="catpcv")
 print(xtaula, comment=F, include.rownames=F)
 ```
-
-
-
 
 
 \vspace{1.5cm}
@@ -413,6 +411,8 @@ print(xtaula, comment=F, include.rownames=F)
 The main objective of this study was to assess the efficiency of the different kinds of doses used to cure cows infected with the trypanosomosis parasite. As expected, time and dose have a positive effect on the cow's health. However the effect of the dose varies with the kind of doses used. No differences were found when comparing medium dose with low dose, using different models. However, high dose was found to be significantly better than the low dose.
 
 When dealing with missings...
+
+\vspace{1.5cm}
 
 # Limitations and Further research
 \label{sec:Further_research}
