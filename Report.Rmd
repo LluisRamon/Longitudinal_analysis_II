@@ -134,9 +134,9 @@ http://faculty.washington.edu/yanez/b540/lectures/lectureWk082010-2x2.pdf
 
 
 For the transition model, one models the conditional distribution of the responses,
-$Y_{ij}$, on covariates, $x_{ij}$, and past responses, $Y_{i1}, Y_{i2}, \ldots , Y_{i,j−1}$
+$Y_{ij}$, on covariates, $x_{ij}$, and past responses, $Y_{i1}, Y_{i2}, \ldots , Y_{i,j-1}$
 
-* Let $H_{ij} = {Y_{i1}, Y_{i2}, \ldots , Y_{i,j−1}} =$ history of past responses.
+* Let $H_{ij} = {Y_{i1}, Y_{i2}, \ldots , Y_{i,j-1}} =$ history of past responses.
 * The conditional mean of the transitional model is
 $\mu^c_{ij} = E[Y_{ij} | H_{ij}, x_{ij}]$
 
@@ -156,7 +156,7 @@ Past responses (or functions thereof) are treated as additional explanatory vari
 
 In our case, a possible transition model would be,
 
-$$logit[P(PCV_{ij} | x_{ij}, PCV_{i,j−1}] = \alpha_0 + \alpha_1 doseMedium + \alpha_1 doseHigh + \alpha_3 PCV_{i,j−1}$$
+$$logit[P(PCV_{ij} | x_{ij}, PCV_{i,j-1}] = \alpha_0 + \alpha_1 doseMedium + \alpha_1 doseHigh + \alpha_3 PCV_{i,j-1}$$
 
 We consider that this model could be good and worth a try. Even though the serie is quite short with just 3 elements.
 
@@ -179,8 +179,10 @@ some sense and better understand the data we were given.
 Knowing the general behavior of the data is a starting point to every other analysis. Figure \ref{fig:data} shows the value of the binary outcome for all the cows in the dataset.
 
 ```{r figdata, fig.cap="Representation of the data. \\label{fig:data}",, fig.pos = "H", fig.height = 4, fig.width = 6}
- 
-qplot(factor(time), pcv.b, data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ dose,  colour = factor(id)) + scale_color_discrete(guide = 'none')
+ cows.com$doseExt <- factor(cows.com$dose, labels = c("Low", "Medium", "High"))
+
+qplot(factor(time), factor(pcv.b), data = cows.com, group = id, xlab = "time", geom = c("line", "point"), facets = id~ doseExt,  colour = factor(id)) + scale_color_discrete(guide = 'none') + xlab("time") + ylab("Health status") + scale_y_discrete(labels = c("Unhealthy", "Healthy" ))
+
 ```
 
 It clearly appears that cows which are treated with the low dose are unhealthy at time 1 and 2 (except for cow 7). The second major observation is that at time 3 cows that are treated with the high dose are healthy. This is still true for almost every cows at time 2. 
