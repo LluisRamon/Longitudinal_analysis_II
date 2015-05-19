@@ -343,12 +343,13 @@ than in high dose, and also as time increases.
 Missing values in the PCV are not produced completely at random.
 
 ```{r nabars, fig.height=3, fig.width=5, fig.cap="Percentage of missings for each time and dose with respect to the whole sample. \\label{fig:nabars}", fig.pos="H"}
+cows$doseExt <- factor(cows$dose, labels = c("Low", "Medium", "High"))
+cows$missing <- is.na(cows$pcv.f)
 
-par(cex=0.8)
-a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
-abline(h=0)
-axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
-axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
+cows2 <- cows %>% group_by(doseExt, time) %>% dplyr::summarise(n = sum(missing))
+ggplot(cows2, aes(factor(time), n, fill = doseExt)) + 
+  geom_bar(position = "dodge", stat="identity") + facet_grid(.~ doseExt) + 
+  guides(fill = FALSE) + xlab("time") + ylab("Number of missings") 
 ```
 
 ```{r taula:nas, results='asis'}
