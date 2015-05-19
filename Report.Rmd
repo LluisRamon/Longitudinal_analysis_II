@@ -158,7 +158,7 @@ In our case, a possible transition model would be,
 
 $$logit[P(PCV_{ij} | x_{ij}, PCV_{i,j−1}] = \alpha_0 + \alpha_1 doseMedium + \alpha_1 doseHigh + \alpha_3 PCV_{i,j−1}$$
 
-We consider that this model could be good and worth a try. Eventhough the serie is quite short with just 3 elements.
+We consider that this model could be good and worth a try. Even though the serie is quite short with just 3 elements.
 
 ## Missing data
 
@@ -380,7 +380,7 @@ $$logit(p) = \beta_{0}  + \beta_1PCV_{healthy} + \beta_2 doseMedium + \beta_3 do
   
 All the coefficients have a lot of variation depending on the values of the coefficient of the PCV (Table \ref{catpcv}). The missings then, depend a lot on the covariates and also on the values of PCV. 
 
-Also a sensivity analysis was carried out using GEE, pointing to the same direction. The results can be seen in Table \ref{geemissings}
+Also a sensitivity analysis was carried out using GEE, pointing to the same direction. The results can be seen in Table \ref{geemissings}
 
 
 ```{r, fig.cap="Missings distribution with reordered doses for each cow (columns). Missing data is plotted in white, low, medium and high doses are plotted in yellow, orange and red, respectively. \\label{missings-plot}", fig.width=4, fig.height=4}
@@ -448,12 +448,8 @@ print(xtaula, comment=F, include.rownames=F)
 
 The main objective of this study was to assess the efficiency of the different kinds of doses used to cure cows infected with the trypanosomosis parasite. As expected, time and dose have a positive effect on the cow's health. However the effect of the dose varies with the kind of doses used. No differences were found when comparing medium dose with low dose, using different models. However, high dose was found to be significantly better than the low dose.
 
-For the missing analysis part, assuming a particular sequence of doses for the cows (were not given), the missings have a monotonic pattern:
-once there is the first missing, no more values are reported until the end of the study. A possible explanation for this, could be that they die
-during the treatment due to the disease or some other cause. The fact that all almost all the missings happened after reporting a low PCV (unhealthy)
-also supports this idea, even though the causes for this may be others, too. Also the missings were found to be associated with the time and the dose,
-so the missing data are not completely at random for sure. The sensitivity analyses also suggest this idea. If the cows truly are dropouts due to deaths, 
-the missings will clearly be not at random (since the lower the PCV easier to be missing or death).
+For the missing analysis part, assuming a particular sequence of doses for the cows (such a sequence was not given), the missings have a monotonic pattern:
+once there is the first missing, no more values are reported until the end of the study. A possible explanation for this could be that they die during the treatment due to the disease or some other cause. The fact that almost all the missings happened after reporting a low PCV (unhealthy) also supports this idea. Others causes are possible. Besides the missings were found to be associated with the time and the dose. Therefore the missing data are not completely at random. The sensitivity analysis also suggests this idea. If the cows truly are dropped out due to death, the missings will clearly be not at random (MNAR).This idea is reinforced by the fact that the lower the PCV is the easier to be missing is and also to die.
   
 
 \vspace{1.5cm}
