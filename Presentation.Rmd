@@ -177,27 +177,36 @@ print(xtaula)
 
 # Generalized Linear Mixed Model
 
-\small
-\begin{table}[H]
-\centering
-\begin{tabular}{rrrrr}
-  \hline
- & AIC & p-value \\ 
-  \hline
-$\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH$ & 36.592  &  \\ 
- $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 nbirth$ & 38.335 & 0.6123 \\ 
- $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 dose*time$ & 38.998 & 0.4506 \\  
-   \hline
-\end{tabular}
-\end{table}
-\normalsize
+* The grouping factor: id/dose.
+* The random effect on time.
 
 # Generalized Linear Mixed Model
 
-Limitations of the results.
+1. $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH$
+2. $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 nbirth$
+3. $\beta_{0} + (\beta_{1} + b_{1i})time + \beta_2 doseM + \beta_3 doseH + \beta_4 dose*time$
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrr}
+  \hline
+ & df & AIC & p-value \\ 
+  \hline
+1. Initial model & 6 & 36.592  &  \\  
+2. Fixed effect on nbirth & 7 & 38.335 & 0.6123 \\ 
+3. Fixed effect on time*dose & 8 & 38.998 & 0.4506 \\  
+   \hline
+\end{tabular}
+\end{table}
+
+
+# Generalized Linear Mixed Model
+
+Quasicomplete separation problem:
 
 * Small number of observations,
-* complete separation.
+* High value for the estimates and the standard error,
+* A combination of the covariates completely separates the values of the outcome variable.
 
 # Missing Data Analysis
 
@@ -206,19 +215,17 @@ Limitations of the results.
 
 * The high dose is much more efficient.
 * No difference between medium and low dose.
-* The number of births has a relative negative impact.
+
 
 # Limitations
 
 * Information could be added to the data set.
 * No control group.
 * Small sample. Bias by selection?
-* Missing values could be further analysed.
-
 
 
 --------
 
-
+![](images/cowFuny.jpg)
 
 > Thank you for your attention! 
