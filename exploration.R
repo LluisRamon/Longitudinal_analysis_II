@@ -201,23 +201,67 @@ fisher.test(table(is.na(cows$pcv.f),cows$time))
 # agg <- agg[oagg,]
 # agg <- agg[order(agg[[3]]),]
 
-# Pattern
 
-# Monotone missing pattern
+# Missings ----------------------------------------------------------------
 
-# The definition of monotonic missing is that, once the subject dropped out he
-# will drop out forever, while for non-monotonic missing the subject may 
-# come back or be missing again.
+fisher.test(is.na(cows$pcv), cows$dose)
+fisher.test(is.na(cows$pcv), cows$time)
 
-# Patrons, indicar número per temps
-# 
-# o o o
-# o o m
-# o m m
-# m m m
+par(cex=0.8)
+a <- barplot(table(is.na(cows$pcv.f), paste(cows$dose, cows$time, sep="_"))[2,c(4:9, 1:3)]/nrow(cows)*100, beside=T, space=c(0,0,0,1,0,0,1,0,0), xaxt="n", ylab="%")
+abline(h=0)
+axis(1, at=a[c(2,5,8),], paste("Dose", levels(cows$dose)), tick=F, line=1.5)
+axis(1, at=a, rep(paste("T", 1:3, sep=""),3), tick=F, line=-0.5)
 
-# Sensitivity analysis
+aggregate(list(Missing=is.na(cows$pcv.f), Available=!is.na(cows$pcv.f)), list(Time=cows$time, Dose=cows$dose), sum)[,c(2,1,3:4)]
 
-# Atenea Tesi Doctoral Carles Pi
 
-# Try to impute
+for(i in 1:10){
+  vaca <- cows[cows$id==i,]
+  tb <- table(vaca$dose,is.na(vaca$pcv))[,1]
+  tbord <- tb[order(tb, decreasing = T)]
+  vaca <- vaca[c(which(vaca$dose=="L"),
+                 which(vaca$dose=="M"),
+                 which(vaca$dose=="H")),]
+  cows[cows$id==i,] <- vaca
+}
+
+b <- sapply(unique(cows$id), FUN=function(x){
+  !is.na(cows[cows$id==x, "pcv"])
+})
+colors <- matrix(ifelse(cows$dose=="H", 3, ifelse(cows$dose=="L", 1, 2)), ncol=10)
+image(y=1:10, x=1:9, (colors*b), xaxt="n", ylab="ID", xlab="Time", col=c("white", heat.colors(3)[3:1]))
+abline(v=1:10-0.5)
+abline(h=1:10-0.5)
+axis(1, at=1:9, rep(1:3, 3))
+axis(3, at=c(2,5,8), c("Low", "Medium", "High"), tick=F, line=-0.5)
+axis(3, at=5, line=0.75, "DOSE", tick=F)
+
+
+a <- -6:6
+a[7] <- 6
+sums <- sapply(a, function(k) {
+  m <- glm(is.na(pcv.f)~time+dose, offset=k*pcv.b, data=cows)
+  sm <- exp(summary(m)$coef[-(1:2), 1])
+  cbind(OR=as.matrix(sm), exp(confint(m)[-(1:2),]))
+}, simplify=F)
+a <- -6:6
+m <- glm(is.na(pcv.f)~time+dose, data=cows)
+sm <- exp(summary(m)$coef[-(1:2), 1])
+sums[[7]] <- cbind(OR=as.matrix(sm), exp(confint(m)[-(1:2),]))
+taula <- sapply(1:length(sums), function(x) {
+  paste(round(sums[[x]][,1],3), " (", round(sums[[x]][,2],3), "-", round(sums[[x]][,3],3), ")", sep="")
+})
+rownames(taula) <- rownames(sums[[7]])
+
+a <- seq(-2,2,by=0.1)
+sums <- sapply(a, function(k) summary(geeglm(is.na(pcv.b) ~ dose + time, offset=k*pcv.b, id = idDose, data = cows.com,
+                                             family = binomial, corstr="ar1" , scale.fix = TRUE)
+)$coef[-1,-3], simplify=F)
+sums[[21]] <- summary(geeglm(is.na(pcv.b) ~ dose + time, id = idDose, data = cows.com,
+                             family = binomial, corstr="ar1", scale.fix = TRUE))$coef[-1,-3]
+taula <- sapply(1:length(sums), function(x) {
+  paste(round(sums[[x]][-3,1],3), " (", round(sums[[x]][-3,2],3), ")", sep="")
+})
+a[20] <- 0.1
+rownames(taula) <- rownames(sums[[21]])[-1]
