@@ -409,23 +409,22 @@ taula <- sapply(1:length(sums), function(x) {
   paste(round(sums[[x]][,1],3), " (", round(sums[[x]][,2],3), "-", round(sums[[x]][,3],3), ")", sep="")
 })
 rownames(taula) <- rownames(sums[[7]])
-xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Odds ratio and 95 percent confidence interval, given the coefficient for the PCV.", label="catpcv")
+xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Odds ratio and 95 percent confidence interval, given the coefficient for the PCV  using a logistic model", label="catpcv")
 print(xtaula, comment=F, include.rownames=F)
 ```
 
 ```{r, warning=FALSE, results='asis'}
-a <- seq(-2,2,by=0.1)
+a <- seq(-2,2,by=0.2)
 sums <- sapply(a, function(k) summary(geeglm(is.na(pcv.b) ~ dose + time, offset=k*pcv.b, id = idDose, data = cows.com,
                                              family = binomial, corstr="ar1" , scale.fix = TRUE)
 )$coef[-1,-3], simplify=F)
-sums[[21]] <- summary(geeglm(is.na(pcv.b) ~ dose + time, id = idDose, data = cows.com,
+sums[[11]] <- summary(geeglm(is.na(pcv.b) ~ dose + time, id = idDose, data = cows.com,
                              family = binomial, corstr="ar1", scale.fix = TRUE))$coef[-1,-3]
 taula <- sapply(1:length(sums), function(x) {
   paste(round(sums[[x]][-3,1],3), " (", round(sums[[x]][-3,2],3), ")", sep="")
 })
-a[20] <- -0.1
 rownames(taula) <- rownames(sums[[21]])[-1]
-xtaula <- xtable(cbind(Beta1=a, t(taula)), caption="Regression coefficients and SD given the coefficient for the PCV.", label="geemissings")
+xtaula <- xtable((cbind(Beta1=a, t(taula))), caption="Regression coefficients and SD given the coefficient for the PCV using a GEE model.", label="geemissings")
 print(xtaula, comment=F, include.rownames=F)
 ```
 
