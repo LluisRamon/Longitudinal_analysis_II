@@ -281,12 +281,6 @@ print(xtaula, comment=F, include.rownames=F, scalebox=0.55)
      - Probability of missings depend on the PCV value itself.
      - The cows with worse evolution were not evaluated.
 
-# Limitations
-
-* Information could be added to the data set.
-* No control group.
-* Small sample. Bias by selection?
-
 
 --------
 
