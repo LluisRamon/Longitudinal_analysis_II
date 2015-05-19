@@ -135,7 +135,7 @@ print(taula, table.placement = "H")
 
 * Generalized Estimating Equations (GEE) 
 * Generalized Linear Mixed Model (GLMM)
-* Missing Data Analysis: Fisher tests and Sensivity analyses.
+* Missing Data Analysis: Fisher tests and Sensitivity analyses.
 
 # Generalized Estimating Equations
 
