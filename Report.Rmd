@@ -1,10 +1,11 @@
 ---
 title: Study of the efficacy of Berenil applied to trypanosomosis's infected cattle
   using a binary outcome
-author: "Gerard Castellà, Mathieu Marauri and Lluis Ramon"
+author: "Gerard Castellà, Mathieu Marauri and Lluís Ramon"
 output:
   pdf_document:
     fig_caption: yes
+    keep_tex: yes
     number_sections: yes
     toc: yes
 header-includes: \usepackage{float}
@@ -256,9 +257,7 @@ xtaula <- xtable(xx, caption="Crosstable with the predicted data with the model 
 print(xtaula)
 ```
 
-\newpage
-
-## Random effects model
+## Generalized Linear Mixed Model
 
 ### Selection of the model
 \label{subsec:RandomEffects_Selection}
@@ -426,7 +425,7 @@ xtaula <- xtable((cbind(Beta1=a, t(taula))), caption="Regression coefficients an
 print(xtaula, comment=F, include.rownames=F)
 ```
 
-\vspace{1.5cm}
+\newpage
 
 # Conclusion
 
@@ -454,6 +453,8 @@ In this study we dealt at several occasions with the Perfect Separation Problem.
 Transition models are explained in section \ref{sec:Transion} and a better exploration could be interesting.
 
 \vspace{1.5cm}
+
+\newpage
 
 # Bibliography
 
