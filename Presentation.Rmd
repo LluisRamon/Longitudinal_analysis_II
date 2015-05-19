@@ -275,7 +275,7 @@ print(xtaula, comment=F, include.rownames=F, scalebox=0.55)
 
 - The high dose is much more efficient.
 - No difference between medium and low dose.
-- Monotonic missings. Probably due to death.
+- Monotonic missings. It could be due to death.
 - Missings are not MCAR.
 - If missings are due to death: 
      - Probability of missings depend on the PCV value itself.
