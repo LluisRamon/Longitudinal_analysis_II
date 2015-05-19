@@ -464,7 +464,6 @@ Transition models are explained in section \ref{sec:Transion} and a better explo
 * Hardin & Hilbe 2002, Generalized Estimating Equations
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
 * Heinze G, Schemper M. A solution to the problem of separation in logistic regression. Stat Med. 2002 Aug 30;21(16):2409-19
-* http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
 * Ioannis Kosmidis (2013). brglm: Bias reduction in binomial-response Generalized
   Linear Models.
 * Jarrod D Hadfield (2010). MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package. Journal of Statistical Software, 33(2), 1-22.
