@@ -461,19 +461,12 @@ Transition models are explained in section \ref{sec:Transion} and a better explo
 
 \label{sec:Bibliography}
 
-TODO(Gerard): Normalize citations
-
-* [Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.][]
-* [Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11][] 
-* [Hardin & Hilbe 2002, Generalized Estimating Equations][]
+* Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.
+* Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11 
+* Hardin & Hilbe 2002, Generalized Estimating Equations
 * Kamil Bartoń (2015). MuMIn: Multi-Model Inference. R package version 1.13.4.
-  http://CRAN.R-project.org/package=MuMIn
-* A solution to the problem of separation in logistic regression. http://www.ncbi.nlm.nih.gov/pubmed/12210625 
-* complete separation/ http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
+* Heinze G, Schemper M. A solution to the problem of separation in logistic regression. Stat Med. 2002 Aug 30;21(16):2409-19
+* http://www.ats.ucla.edu/stat/mult_pkg/faq/general/complete_separation_logit_models.htm
 * Ioannis Kosmidis (2013). brglm: Bias reduction in binomial-response Generalized
-  Linear Models. http://www.ucl.ac.uk/~ucakiko/software.html
-* Jarrod D Hadfield (2010). MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package. Journal of Statistical Software, 33(2), 1-22. URL http://www.jstatsoft.org/v33/i02/.
-  
-[Pan 2001, Biometrics, Akaike's Information Criterion in Generalized Estimating Equations.]: http://www.jstor.org/stable/2676849?seq=2#references_tab_contents
-[Højsgaard, S., Halekoh, U. & Yan J. (2006) The R Package geepack for Generalized Estimating Equations Journal of Statistical Software, 15, 2, pp1--11]: http://www.jstatsoft.org/v15/i02/paper
-[Hardin & Hilbe 2002, Generalized Estimating Equations]: http://books.google.es/books/about/Generalized_Estimating_Equations.html?id=wxl7ajq8ymYC&redir_esc=y
+  Linear Models.
+* Jarrod D Hadfield (2010). MCMC Methods for Multi-Response Generalized Linear Mixed Models: The MCMCglmm R Package. Journal of Statistical Software, 33(2), 1-22.
