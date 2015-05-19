@@ -130,8 +130,35 @@ A similar process that the one used in the GEE to select the covariates will be 
 
 \label{sec:Transion}
 
-TODO(Lluis): Add model information.
-TODO(All): Include pros/cons with our data. Decide if our data could be modeled using this kinds of models.
+http://faculty.washington.edu/yanez/b540/lectures/lectureWk082010-2x2.pdf
+
+
+For the transition model, one models the conditional distribution of the responses,
+$Y_{ij}$, on covariates, $x_{ij}$, and past responses, $Y_{i1}, Y_{i2}, \ldots , Y_{i,j−1}$
+
+* Let $H_{ij} = {Y_{i1}, Y_{i2}, \ldots , Y_{i,j−1}} =$ history of past responses.
+* The conditional mean of the transitional model is
+$\mu^c_{ij} = E[Y_{ij} | H_{ij}, x_{ij}]$
+
+We consider transition models where the conditional mean satisfies the equation
+
+$$g(\mu^c_{ij}) = {x_{ij}}'\beta + \sum_{r=1}^{s} f_r(H_{ij}, \alpha)$$
+
+for suitable functions $f_r$ and parameters $\alpha$.
+
+Past responses (or functions thereof) are treated as additional explanatory variables.
+
+* The present is affected by the past through the sum of $s$ terms.
+
+* These models nicely characterize change for longitudinal categorical data.
+* The likelihood factorization means that standard GLM software can be used to fit the models.
+* The coefficients for the previous responses summarize the strength of the longitudinal dependence (compared to our other models)
+
+In our case, a possible transition model would be,
+
+$$logit[P(PCV_{ij} | x_{ij}, PCV_{i,j−1}] = \alpha_0 + \alpha_1 doseMedium + \alpha_1 doseHigh + \alpha_3 PCV_{i,j−1}$$
+
+We consider that this model could be good and worth a try. Eventhough the serie is quite short with just 3 elements.
 
 \vspace{1.5cm}
 
